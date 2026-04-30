@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Libertex Social — copy trading strategies</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mont:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="/" aria-label="Libertex Social home">
+    <span class="logo-tile" aria-hidden="true">
+      <img src="/logo.svg" alt="">
+    </span>
+    <span class="brand-text">
+      <span class="brand-name">LIBERTEX <span>SOCIAL</span></span>
+      <span class="brand-sub">Copy Trading</span>
+    </span>
+  </a>
+  <input id="search" type="search" placeholder="Search by signal name…" autocomplete="off">
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle theme" title="Toggle dark mode">
+    <span class="theme-icon">🌙</span>
+  </button>
+</header>
+
+<main>
+  <aside id="filters">
+    <div class="fgroup">
+      <div class="ftitle-row">
+        <label class="ftitle">Risk</label>
+        <button id="reset" class="btn-reset" type="button">reset filters</button>
+      </div>
+      <div class="chips" id="risk-chips">
+        <button class="chip" data-risk="Low">Low</button>
+        <button class="chip" data-risk="Medium">Medium</button>
+        <button class="chip" data-risk="High">High</button>
+      </div>
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Return %</label><span class="fval" id="ret-val">any</span></div>
+      <div class="dual-track" id="ret-track">
+        <input class="range-dual" id="ret-min" type="range" min="0" max="500" step="10" value="0">
+        <input class="range-dual" id="ret-max" type="range" min="0" max="500" step="10" value="500">
+        <div class="bubble" id="ret-min-bubble">0%</div>
+        <div class="bubble" id="ret-max-bubble">500%</div>
+      </div>
+      <div class="scale"><span>0%</span><span>250%</span><span>500%</span></div>
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Max Drawdown ≤</label><span class="fval" id="dd-max-val">any</span></div>
+      <input class="range" id="dd-max" type="range" min="0" max="100" step="5" value="100">
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Balance</label><span class="fval" id="balance-val">any</span></div>
+      <div class="dual-track" id="balance-track">
+        <input class="range-dual" id="balance-min" type="range" min="0" max="100" step="1" value="0">
+        <input class="range-dual" id="balance-max" type="range" min="0" max="100" step="1" value="100">
+        <div class="bubble" id="balance-min-bubble">$0</div>
+        <div class="bubble" id="balance-max-bubble">$10M+</div>
+      </div>
+      <div class="scale"><span>$0</span><span>$10K</span><span>$10M</span></div>
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Mgmt Fee ≤</label><span class="fval" id="fee-max-val">any</span></div>
+      <input class="range" id="fee-max" type="range" min="0" max="100" step="5" value="100">
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Copiers AUM ≥</label><span class="fval" id="aum-min-val">any</span></div>
+      <input class="range" id="aum-min" type="range" min="0" max="5000000" step="50000" value="0">
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Copiers ≥</label><span class="fval" id="copiers-min-val">any</span></div>
+      <input class="range" id="copiers-min" type="range" min="0" max="3000" step="10" value="0">
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Age ≥ (days)</label><span class="fval" id="age-min-val">any</span></div>
+      <input class="range" id="age-min" type="range" min="0" max="3000" step="10" value="0">
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Trades ≥</label><span class="fval" id="trades-min-val">any</span></div>
+      <input class="range" id="trades-min" type="range" min="0" max="10000" step="50" value="0">
+    </div>
+    <div class="fgroup">
+      <div class="ftitle-row"><label class="ftitle">Win Rate ≥</label><span class="fval" id="winrate-min-val">any</span></div>
+      <input class="range" id="winrate-min" type="range" min="0" max="100" step="5" value="0">
+    </div>
+  </aside>
+
+  <section id="list-wrap">
+    <div id="toolbar">
+      <button id="filters-toggle" class="btn-flat filters-toggle" type="button" aria-expanded="false">Filters</button>
+      <div id="counts">…</div>
+      <div class="sort">
+        <label>Sort:</label>
+        <select id="sort">
+          <option value="return-desc">Return ↓</option>
+          <option value="return-asc">Return ↑</option>
+          <option value="copiers-desc">Copiers ↓</option>
+          <option value="copiers-asc">Copiers ↑</option>
+          <option value="aum-desc">Copiers AUM ↓</option>
+          <option value="aum-asc">Copiers AUM ↑</option>
+          <option value="dd-asc">Drawdown ↑</option>
+          <option value="dd-desc">Drawdown ↓</option>
+          <option value="fee-asc">Fee ↑</option>
+          <option value="fee-desc">Fee ↓</option>
+          <option value="age-desc">Age ↓</option>
+          <option value="age-asc">Age ↑</option>
+          <option value="balance-desc">Balance ↓</option>
+          <option value="balance-asc">Balance ↑</option>
+          <option value="winrate-desc">Win Rate ↓</option>
+          <option value="winrate-asc">Win Rate ↑</option>
+          <option value="trades-desc">Trades ↓</option>
+          <option value="trades-asc">Trades ↑</option>
+          <option value="monthly-desc">Monthly Profit ↓</option>
+          <option value="monthly-asc">Monthly Profit ↑</option>
+        </select>
+      </div>
+      <button id="refresh" class="btn-flat" title="reload via /api/discover">↻ reload</button>
+    </div>
+
+    <div class="table">
+      <div id="head" class="row head">
+        <div>Name</div>
+        <div>Equity curve</div>
+        <div class="c-num sortable" data-sort="return">Return %</div>
+        <div class="c-num sortable" data-sort="copiers">Copiers</div>
+        <div class="c-num sortable" data-sort="aum">Copiers AUM</div>
+        <div class="c-num sortable" data-sort="dd">Max Drawdown</div>
+        <div class="c-num sortable" data-sort="age">Age</div>
+        <div class="c-num sortable" data-sort="balance">Balance</div>
+        <div class="c-num sortable" data-sort="fee">Mgmt Fee %</div>
+        <div></div>
+      </div>
+      <div id="list"></div>
+    </div>
+
+    <div id="loadmore"></div>
+    <nav id="pager" class="pager"></nav>
+  </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>
