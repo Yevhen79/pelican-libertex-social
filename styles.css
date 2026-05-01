@@ -543,3 +543,162 @@ section#list-wrap { min-width:0; }
   /* Progress / loadmore */
   #loadmore { padding:14px 6px; font-size:12px; }
 }
+
+/* =============================================================
+   Liquid glass + modern interactive
+   - Atmospheric chrome-blob decorations (from the Figma design)
+   - Frosted-glass panels (header, sidebar, table)
+   - Soft hover lifts, button micro-animations, pulsing FREE badge
+   ============================================================= */
+
+body { position:relative; overflow-x:hidden; }
+body::before, body::after {
+  content:''; position:fixed; pointer-events:none; z-index:0;
+  background-repeat:no-repeat; background-position:center; background-size:contain;
+  filter:saturate(120%);
+}
+body::before {
+  /* orange/chrome wave — top right */
+  background-image:url('/bg-blob.png');
+  width:920px; height:480px; top:-140px; right:-160px;
+  transform:rotate(-12deg); opacity:.42;
+}
+body::after {
+  /* silver chrome — bottom left */
+  background-image:url('/bg-blob2.png');
+  width:780px; height:580px; bottom:-180px; left:-140px;
+  transform:rotate(18deg); opacity:.30;
+}
+html[data-theme="light"] body::before { opacity:.18; }
+html[data-theme="light"] body::after  { opacity:.12; }
+
+/* keep app content above the decorations */
+header, main, .pager { position:relative; z-index:1; }
+
+/* Frosted-glass header */
+header {
+  background:rgba(20,23,28,.62);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+          backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+html[data-theme="light"] header {
+  background:rgba(255,255,255,.62);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+
+/* Frosted-glass cards (filters sidebar + table) */
+aside#filters, .table {
+  background:rgba(24,28,34,.55);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+          backdrop-filter:blur(14px) saturate(140%);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+}
+html[data-theme="light"] aside#filters,
+html[data-theme="light"] .table {
+  background:rgba(255,255,255,.62);
+  border-color:rgba(0,0,0,.06);
+  box-shadow:0 8px 32px rgba(20,30,20,.08), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.row.head {
+  background:rgba(42,52,51,.50);
+  -webkit-backdrop-filter:blur(8px);
+          backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+html[data-theme="light"] .row.head {
+  background:rgba(220,225,220,.55);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+
+/* Smoother global easing for interactive elements */
+.row:not(.head),
+.signal-link, .btn-flat, .btn-orange, .btn-reset, .chip,
+.theme-toggle, .logo-tile, .pager button, .pager .page {
+  transition:
+    transform   .25s cubic-bezier(.2,.8,.2,1),
+    background-color .2s ease,
+    border-color     .2s ease,
+    color            .2s ease,
+    box-shadow  .25s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Row hover: subtle slide + orange edge cue */
+.row:not(.head):hover {
+  transform:translateX(2px);
+  background:rgba(255,255,255,.04);
+  box-shadow:inset 3px 0 0 0 var(--orange);
+}
+html[data-theme="light"] .row:not(.head):hover {
+  background:rgba(0,0,0,.025);
+}
+.row .c-spark svg { transition:transform .25s cubic-bezier(.2,.8,.2,1); }
+.row:not(.head):hover .c-spark svg { transform:scale(1.04); }
+
+/* Buttons — liquid feel */
+.signal-link:hover {
+  transform:translateY(-1px) scale(1.03);
+  box-shadow:0 6px 20px rgba(239,124,70,.35);
+}
+.signal-link:active { transform:translateY(0) scale(.98); }
+
+.btn-flat:hover, .pager button:hover:not(:disabled), .pager .page:hover:not(.cur) {
+  transform:translateY(-1px);
+}
+.btn-flat:active, .pager button:active:not(:disabled), .pager .page:active:not(.cur) {
+  transform:translateY(0);
+}
+
+.chip:hover { transform:translateY(-1px); }
+.chip.on    { box-shadow:0 4px 14px rgba(239,124,70,.40); }
+
+.btn-reset:hover { transform:scale(1.03); }
+.theme-toggle:hover { transform:rotate(20deg); }
+
+/* Brand logo: subtle bounce on hover */
+.logo-tile { transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+.brand:hover .logo-tile {
+  transform:scale(1.06) rotate(-3deg);
+  box-shadow:0 4px 16px rgba(239,124,70,.40);
+}
+
+/* Search input: orange focus ring */
+header input[type=search] { transition:border-color .2s, box-shadow .25s; }
+header input[type=search]:focus { box-shadow:0 0 0 3px rgba(239,124,70,.18); }
+
+/* Slider thumbs: soft orange halo when active */
+input[type=range].range::-webkit-slider-thumb,
+.range-dual::-webkit-slider-thumb {
+  transition:transform .15s, box-shadow .25s;
+}
+.slider-wrap.active input[type=range].range::-webkit-slider-thumb,
+.range-dual:active::-webkit-slider-thumb,
+.range-dual:focus::-webkit-slider-thumb {
+  box-shadow:0 0 0 6px rgba(239,124,70,.18), 0 1px 4px rgba(0,0,0,.3);
+}
+
+/* FREE badge: soft pulse */
+@keyframes free-pulse {
+  0%, 100% { box-shadow:0 0 0 0 rgba(78,217,140,.35); }
+  50%      { box-shadow:0 0 0 5px rgba(78,217,140,0);  }
+}
+.free-badge { animation:free-pulse 2.4s ease-in-out infinite; }
+
+/* Sort indicator — smoother color shift */
+.row.head .c-num.sortable::after { transition:color .2s, transform .2s; }
+
+/* Mobile: lighter blur for performance, keep effects */
+@media (max-width:720px) {
+  header, aside#filters, .table {
+    -webkit-backdrop-filter:blur(10px) saturate(150%);
+            backdrop-filter:blur(10px) saturate(150%);
+  }
+  body::before { width:560px; height:300px; opacity:.32; }
+  body::after  { width:480px; height:360px; opacity:.22; }
+}
+
+/* Honor reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation:none !important; transition:none !important; }
+}
