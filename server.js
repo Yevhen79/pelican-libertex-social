@@ -25,6 +25,8 @@ const ALLOWED = [
   /^\/api\/strategies\/?$/,
   /^\/api\/strategies\/\d+\/?$/,
   /^\/api\/strategies\/\d+\/stats\/?$/,
+  /^\/api\/strategies\/\d+\/signals\/open\/?$/,
+  /^\/api\/strategies\/\d+\/signals\/closed\/?$/,
   /^\/api\/servers\/?$/,
   /^\/api\/brokers\/?$/,
 ];

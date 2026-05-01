@@ -59,6 +59,18 @@ function fmtFee(s) {
   if (s._meta) return '<span class="free-cell">Free</span>';
   return '<span class="dim">—</span>';
 }
+function fmtTradeTime(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso); if (isNaN(d.getTime())) return '—';
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function fmtTradePrice(v) { return v == null ? '—' : Number(v).toFixed(5); }
+function fmtTradePnl(v, ccy='USD') {
+  if (v == null) return '<span class="dim">—</span>';
+  const n = Number(v), sign = n >= 0 ? '+' : '';
+  return `<span class="${n >= 0 ? 'green' : 'red'}">${ccy} ${sign}${n.toFixed(2)}</span>`;
+}
 function ageDays(iso) {
   if (!iso) return null;
   const t = Date.parse(iso); if (isNaN(t)) return null;
@@ -319,9 +331,87 @@ function rowHtml(s) {
     <div class="field"><div class="label">Yearly profit</div><div class="value">${fmtMoneyFull(s.YearlyProfit)}</div></div>
     <div class="field"><div class="label">Currency</div><div class="value">${escapeHtml(s.Currency || '—')}</div></div>
     <div class="field markets"><div class="label">Traded markets</div><div class="value markets-list">${marketsHtml}</div></div>
+    ${tradesSection(s, 'open')}
+    ${tradesSection(s, 'closed')}
   </div>`;
 
   return headRow + det;
+}
+
+// Upstream returns the full set in one shot (Skip/Take are ignored), so we just fetch once
+// and let the user scroll within the trades-list (scrollable area capped via CSS).
+
+function tradeRowHtml(t, kind) {
+  const dir = String(t.Direction || '').toUpperCase();
+  const dirCls = dir === 'BUY' ? 'dir-buy' : 'dir-sell';
+  const closeOrCurrent = kind === 'closed' ? t.ClosePrice : t.CurrentPrice;
+  const pnl = kind === 'closed' ? t.RealisedProfit : t.UnrealisedProfit;
+  const closeTime = kind === 'closed' ? t.CloseTimestamp : null;
+  return `<div class="trade">
+    <div class="trade-main">
+      <span class="trade-dir ${dirCls}">${dir}</span>
+      <span class="trade-qty">${t.Quantity}</span>
+      <span class="trade-inst">${escapeHtml(t.Instrument || '')}</span>
+      <span class="trade-prices">@ ${fmtTradePrice(t.OpenPrice)} → ${fmtTradePrice(closeOrCurrent)}</span>
+    </div>
+    <div class="trade-pnl">${fmtTradePnl(pnl, t.CurrencyCode)}</div>
+    <div class="trade-meta">
+      <span class="trade-time">${fmtTradeTime(t.OpenTimestamp)}${closeTime ? ' → ' + fmtTradeTime(closeTime) : ''}</span>
+      <span class="trade-id">#${escapeHtml(String(t.TradeId || ''))}</span>
+    </div>
+  </div>`;
+}
+
+function tradesSection(s, kind) {
+  const title = kind === 'open' ? 'Open Trades' : 'Trade History';
+  const dataKey = kind === 'open' ? '_openTrades' : '_closedTrades';
+  const loadingKey = kind === 'open' ? '_openLoading' : '_closedLoading';
+  const doneKey = kind === 'open' ? '_openDone' : '_closedDone';
+  const items = s[dataKey];
+
+  let body = '';
+  if (!Array.isArray(items)) {
+    body = s[loadingKey]
+      ? '<div class="dim trades-empty"><span class="spinner"></span>loading…</div>'
+      : '<div class="dim trades-empty">expand a row to load</div>';
+  } else if (items.length === 0) {
+    body = '<div class="dim trades-empty">' +
+      (kind === 'open' ? 'no open positions' : 'no closed signals in the last 30 days') +
+      '</div>';
+  } else {
+    body = items.map(t => tradeRowHtml(t, kind)).join('');
+  }
+
+  const count = Array.isArray(items) ? String(items.length) : '';
+  return `<div class="field trades-block">
+    <div class="label">${title}${count ? ' · ' + count : ''}</div>
+    <div class="trades-list">${body}</div>
+  </div>`;
+}
+
+async function loadTrades(s, kind) {
+  const dataKey    = kind === 'open' ? '_openTrades'  : '_closedTrades';
+  const loadingKey = kind === 'open' ? '_openLoading' : '_closedLoading';
+  if (s[loadingKey] || Array.isArray(s[dataKey])) return;
+  s[loadingKey] = true; scheduleRender();
+
+  let qs = '';
+  if (kind === 'closed') {
+    // Upstream only honors the date window (Skip/Take are ignored) and caps it at ~30 days.
+    const end = new Date();
+    const start = new Date(Date.now() - 30 * 86400000);
+    const fmt = d => d.toISOString().replace(/\.\d+Z$/, 'Z');
+    qs = `?startDate=${encodeURIComponent(fmt(start))}&endDate=${encodeURIComponent(fmt(end))}`;
+  }
+  try {
+    const r = await fetch(`/api/strategies/${s.Id}/signals/${kind}${qs}`);
+    if (!r.ok) throw new Error(r.status);
+    s[dataKey] = await r.json();
+  } catch {
+    s[dataKey] = [];
+  } finally {
+    s[loadingKey] = false; scheduleRender();
+  }
 }
 
 function renderPager(total) {
@@ -725,6 +815,7 @@ function bindUI() {
 
   list.addEventListener('click', e => {
     if (e.target.closest('[data-link]')) return; // let the Signal link <a> open normally
+    if (e.target.closest('.trades-list')) return; // don't collapse the row when scrolling/clicking trades
     const row = e.target.closest('.row[data-id]');
     if (!row) return;
     const id = Number(row.dataset.id);
@@ -732,13 +823,17 @@ function bindUI() {
     else {
       STATE.expanded.add(id);
       const s = STATE.byId.get(id);
-      if (s && !Array.isArray(s.Markets) && !s._marketsLoading) {
-        s._marketsLoading = true;
-        fetch('/api/strategies/' + id + '/stats').then(r => r.json()).then(j => {
-          const arr = j.Trades?.Inception?.Markets || [];
-          s.Markets = arr.slice(0, 12).map(m => ({ n: m.MarketName, c: m.Count }));
-        }).catch(() => { s.Markets = []; })
-          .finally(() => { s._marketsLoading = false; scheduleRender(); });
+      if (s) {
+        if (!Array.isArray(s.Markets) && !s._marketsLoading) {
+          s._marketsLoading = true;
+          fetch('/api/strategies/' + id + '/stats').then(r => r.json()).then(j => {
+            const arr = j.Trades?.Inception?.Markets || [];
+            s.Markets = arr.slice(0, 12).map(m => ({ n: m.MarketName, c: m.Count }));
+          }).catch(() => { s.Markets = []; })
+            .finally(() => { s._marketsLoading = false; scheduleRender(); });
+        }
+        if (!Array.isArray(s._openTrades) && !s._openLoading)   loadTrades(s, 'open');
+        if (!Array.isArray(s._closedTrades) && !s._closedLoading) loadTrades(s, 'closed');
       }
     }
     scheduleRender();
