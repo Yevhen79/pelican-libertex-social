@@ -696,6 +696,88 @@ input[type=range].range::-webkit-slider-thumb,
 /* Sort indicator — smoother color shift */
 .row.head .c-num.sortable::after { transition:color .2s, transform .2s; }
 
+/* =====  iOS-flavor liquid glass nuance  =====
+   - stronger top rim / bottom rim on glass panels (light catches the edge)
+   - subtle frost noise overlay on the cards (matte glass texture)
+   - specular shimmer sweep on the primary CTA on hover
+   - glass-bead slider thumbs (gradient + bright top highlight)
+*/
+
+/* Reinforced rim lighting on glass panels (top catches light, bottom darkens) */
+header {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(0,0,0,.18);
+}
+html[data-theme="light"] header {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.7),
+    inset 0 -1px 0 rgba(0,0,0,.04);
+}
+aside#filters, .table {
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(0,0,0,.18);
+}
+html[data-theme="light"] aside#filters,
+html[data-theme="light"] .table {
+  box-shadow:
+    0 8px 32px rgba(20,30,20,.08),
+    inset 0 1px 0 rgba(255,255,255,.85),
+    inset 0 -1px 0 rgba(0,0,0,.04);
+}
+
+/* Subtle frost-noise texture overlay on the glass panels */
+aside#filters, .table { position:relative; }
+aside#filters::before, .table::before {
+  content:''; position:absolute; inset:0;
+  pointer-events:none; border-radius:inherit;
+  opacity:.06; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.7 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+/* table head sits inside the table, suppress noise duplication */
+.table > #head { position:relative; z-index:1; }
+.table > #list { position:relative; z-index:1; }
+
+/* Specular shimmer sweep on the primary CTA */
+.signal-link { position:relative; overflow:hidden; }
+.signal-link::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(110deg,
+    transparent 30%,
+    rgba(255,255,255,.28) 50%,
+    transparent 70%);
+  transform:translateX(-130%);
+  pointer-events:none;
+  transition:transform 0s;
+  border-radius:inherit;
+}
+.signal-link:hover::after {
+  transform:translateX(130%);
+  transition:transform .85s cubic-bezier(.25,.1,.25,1);
+}
+
+/* Glass-bead slider thumbs: gradient body + bright top highlight */
+input[type=range].range::-webkit-slider-thumb,
+.range-dual::-webkit-slider-thumb {
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255,255,255,.65) 0%, rgba(255,255,255,0) 35%),
+    linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 60%, #c14a23 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    0 1px 4px rgba(0,0,0,.35);
+}
+input[type=range].range::-moz-range-thumb,
+.range-dual::-moz-range-thumb {
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255,255,255,.65) 0%, rgba(255,255,255,0) 35%),
+    linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 60%, #c14a23 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),
+    0 1px 4px rgba(0,0,0,.35);
+}
+
 /* Mobile: lighter blur for performance, keep effects */
 @media (max-width:720px) {
   header, aside#filters, .table {
