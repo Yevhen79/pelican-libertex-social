@@ -105,7 +105,8 @@ header input[type=search]:focus { border-color:var(--orange); }
 .status.warn { color:#8a6512; background:#f6ebd2; }
 .status.bad  { color:#963535; background:#f6dada; }
 
-main { display:grid; grid-template-columns: 340px 1fr; gap:24px; padding:24px 28px 60px; max-width:1640px; margin:0 auto; }
+main { display:grid; grid-template-columns: 340px 1fr; grid-template-rows:auto 1fr; gap:18px 24px; padding:24px 28px 60px; max-width:1640px; margin:0 auto; }
+#toolbar { grid-column:1 / -1; }
 
 aside#filters {
   background:var(--card); border:1px solid var(--line); border-radius:12px;
@@ -272,7 +273,7 @@ html[data-theme="dark"] .btn-reset:hover { background:#ffb38a; color:#1a1d22; }
 
 section#list-wrap { min-width:0; }
 #toolbar {
-  display:flex; gap:14px; align-items:center; padding:0 4px 14px;
+  display:flex; gap:14px; align-items:center; padding:0 4px;
 }
 #counts { color:var(--muted); font-size:13px; }
 .sort { margin-left:auto; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
@@ -427,7 +428,7 @@ section#list-wrap { min-width:0; }
 
 /* ---- compact desktop: fits common laptops 1366/1440/1536/1600 with sidebar still visible ---- */
 @media (max-width:1700px) {
-  main { grid-template-columns: 280px 1fr; gap:18px; padding:20px 20px 50px; }
+  main { grid-template-columns: 280px 1fr; gap:14px 18px; padding:20px 20px 50px; }
   aside#filters { padding:14px 14px 8px; }
   .row {
     grid-template-columns:
@@ -451,7 +452,7 @@ section#list-wrap { min-width:0; }
 
 /* ---- below ~1340: sidebar stacks above the table (small laptops, narrow windows) ---- */
 @media (max-width:1340px) {
-  main { grid-template-columns: 1fr; padding:14px 14px 50px; }
+  main { grid-template-columns: 1fr; padding:14px 14px 50px; gap:12px; }
   aside#filters { position:static; padding:14px; max-width:760px; }
   .row {
     grid-template-columns:
@@ -729,7 +730,7 @@ html[data-theme="light"] .table {
 }
 
 /* Subtle frost-noise texture overlay on the glass panels */
-aside#filters, .table { position:relative; }
+.table { position:relative; }   /* aside is already position:sticky — leave it */
 aside#filters::before, .table::before {
   content:''; position:absolute; inset:0;
   pointer-events:none; border-radius:inherit;

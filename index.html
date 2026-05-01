@@ -28,6 +28,37 @@
 </header>
 
 <main>
+  <div id="toolbar">
+    <button id="filters-toggle" class="btn-flat filters-toggle" type="button" aria-expanded="false">Filters</button>
+    <div id="counts">…</div>
+    <div class="sort">
+      <label>Sort:</label>
+      <select id="sort">
+        <option value="return-desc">Return ↓</option>
+        <option value="return-asc">Return ↑</option>
+        <option value="copiers-desc">Copiers ↓</option>
+        <option value="copiers-asc">Copiers ↑</option>
+        <option value="aum-desc">Copiers AUM ↓</option>
+        <option value="aum-asc">Copiers AUM ↑</option>
+        <option value="dd-asc">Drawdown ↑</option>
+        <option value="dd-desc">Drawdown ↓</option>
+        <option value="fee-asc">Fee ↑</option>
+        <option value="fee-desc">Fee ↓</option>
+        <option value="age-desc">Age ↓</option>
+        <option value="age-asc">Age ↑</option>
+        <option value="balance-desc">Balance ↓</option>
+        <option value="balance-asc">Balance ↑</option>
+        <option value="winrate-desc">Win Rate ↓</option>
+        <option value="winrate-asc">Win Rate ↑</option>
+        <option value="trades-desc">Trades ↓</option>
+        <option value="trades-asc">Trades ↑</option>
+        <option value="monthly-desc">Monthly Profit ↓</option>
+        <option value="monthly-asc">Monthly Profit ↑</option>
+      </select>
+    </div>
+    <button id="refresh" class="btn-flat" title="reload via /api/discover">↻ reload</button>
+  </div>
+
   <aside id="filters">
     <div class="fgroup">
       <div class="ftitle-row">
@@ -95,37 +126,6 @@
   </aside>
 
   <section id="list-wrap">
-    <div id="toolbar">
-      <button id="filters-toggle" class="btn-flat filters-toggle" type="button" aria-expanded="false">Filters</button>
-      <div id="counts">…</div>
-      <div class="sort">
-        <label>Sort:</label>
-        <select id="sort">
-          <option value="return-desc">Return ↓</option>
-          <option value="return-asc">Return ↑</option>
-          <option value="copiers-desc">Copiers ↓</option>
-          <option value="copiers-asc">Copiers ↑</option>
-          <option value="aum-desc">Copiers AUM ↓</option>
-          <option value="aum-asc">Copiers AUM ↑</option>
-          <option value="dd-asc">Drawdown ↑</option>
-          <option value="dd-desc">Drawdown ↓</option>
-          <option value="fee-asc">Fee ↑</option>
-          <option value="fee-desc">Fee ↓</option>
-          <option value="age-desc">Age ↓</option>
-          <option value="age-asc">Age ↑</option>
-          <option value="balance-desc">Balance ↓</option>
-          <option value="balance-asc">Balance ↑</option>
-          <option value="winrate-desc">Win Rate ↓</option>
-          <option value="winrate-asc">Win Rate ↑</option>
-          <option value="trades-desc">Trades ↓</option>
-          <option value="trades-asc">Trades ↑</option>
-          <option value="monthly-desc">Monthly Profit ↓</option>
-          <option value="monthly-asc">Monthly Profit ↑</option>
-        </select>
-      </div>
-      <button id="refresh" class="btn-flat" title="reload via /api/discover">↻ reload</button>
-    </div>
-
     <div class="table">
       <div id="head" class="row head">
         <div>Name</div>
