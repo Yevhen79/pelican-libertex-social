@@ -172,7 +172,9 @@ function sparkline(history, w=140, h=34) {
   // preserveAspectRatio="none" lets the SVG stretch horizontally when CSS sets width:100%
   // (mobile stretches the curve across the full card width; on desktop the explicit width
   // attribute matches the viewBox so this is a no-op).
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" vector-effect="non-scaling-stroke">
+  // vector-effect="non-scaling-stroke" stays on the actual stroked elements only, not the
+  // <svg> root (some Safari versions parse the root-level attribute oddly).
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
     <line x1="0" x2="${w}" y1="${zeroY}" y2="${zeroY}" stroke="var(--grid-line)" stroke-dasharray="2 3" stroke-width="1" vector-effect="non-scaling-stroke"/>
     <path d="${area}" fill="${fill}" stroke="none"/>
     <path d="${line}" fill="none" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
@@ -264,6 +266,13 @@ function render() {
 
   const html = pageItems.map(rowHtml).join('') || '<div style="padding:60px 20px;text-align:center;color:var(--muted)">No matches.</div>';
   list.innerHTML = html;
+
+  // Background-fill: catalog rows that came back from the daily build with empty meta/stats
+  // (upstream had a transient blip during the rebuild). Try once per session per row — the
+  // _enrichAttempted flag set by enrichOne stops us from looping forever on permanently-404 rows.
+  for (const s of pageItems) {
+    if ((!s._meta || !s._stats) && !s._enrichAttempted) enrichOne(s.Id);
+  }
 
   renderPager(totalPages);
   syncSortIndicators();
@@ -547,6 +556,8 @@ async function searchExtra(filter) {
 const enrichInflight = new Set();
 async function enrichOne(id) {
   if (enrichInflight.has(id)) return;
+  const existing = STATE.byId.get(id);
+  if (existing && existing._enrichAttempted && existing._meta && existing._stats) return; // already fully enriched
   enrichInflight.add(id);
   try {
     const [meta, stats] = await Promise.all([
@@ -590,7 +601,7 @@ async function enrichOne(id) {
     }
     // drop disabled (don't load on libertex anyway)
     if (cur.IsEnabled === false) STATE.byId.delete(id);
-    else STATE.byId.set(id, cur);
+    else { cur._enrichAttempted = true; STATE.byId.set(id, cur); }
     scheduleRender();
   } finally { enrichInflight.delete(id); }
 }
