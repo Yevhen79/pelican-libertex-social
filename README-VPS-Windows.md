@@ -24,7 +24,7 @@
 5. Через ~30 секунд проверить:
    ```powershell
    Get-Service PelicanServer, PelicanRefresher, PelicanNgrok
-   Invoke-WebRequest https://snaking-qualm-mandate.ngrok-free.dev -UseBasicParsing |
+   Invoke-WebRequest https://<your-ngrok-domain>.ngrok-free.dev -UseBasicParsing |
        Select-Object StatusCode
    ```
 
@@ -50,7 +50,7 @@
                                               ┌────────────────────────────┐
                                               │ ngrok edge (Cloudflare)    │
    Друг (браузер) ──── 443 ──── ngrok ────────►│                            │
-   https://snaking-qualm-mandate.ngrok-free.dev│ туннель к твоей VPS        │
+   https://<your-ngrok-domain>.ngrok-free.dev│ туннель к твоей VPS        │
                                               └────────────┬───────────────┘
                                                            │
                                                   ┌────────▼─────────┐

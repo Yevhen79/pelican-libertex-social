@@ -6,3 +6,14 @@ node_modules/
 ngrok.exe
 ngrok
 .DS_Store
+
+# Editor / agent local state
+.claude/
+.vscode/
+.idea/
+
+# Figma source assets (private design files — keep out of public repo)
+*.fig
+raw/
+styles/
+svg/

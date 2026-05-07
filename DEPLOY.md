@@ -14,7 +14,7 @@
 > 1. Прокси крутился локально на 127.0.0.1:8787
 > 2. Авто-старт после перезагрузки сервера (Windows-службы)
 > 3. Публикация наружу через **ngrok** на зарезервированный домен
->    `snaking-qualm-mandate.ngrok-free.dev` (токен и домен лежат в `.env`)
+>    `<your-ngrok-domain>.ngrok-free.dev` (токен и домен лежат в `.env`)
 >
 > В архиве есть `install.ps1` — он сам делает всё:
 > - winget установка Node.js 20 LTS и Google Chrome
@@ -23,7 +23,7 @@
 > - Регистрация **трёх Windows-служб** через NSSM:
 >   - `PelicanServer`    → `node server.js`
 >   - `PelicanRefresher` → `node refresher.js` (headless Chrome для refresh OIDC-токена)
->   - `PelicanNgrok`     → `ngrok http 8787 --domain=snaking-qualm-mandate.ngrok-free.dev`
+>   - `PelicanNgrok`     → `ngrok http 8787 --domain=<your-ngrok-domain>.ngrok-free.dev`
 > - Открытие порта 8787 в Windows Firewall (для локального доступа)
 >
 > `.env` уже содержит:
@@ -51,7 +51,7 @@
 >      ```powershell
 >      Get-Content C:\Pelican\logs\ngrok.log -Tail 30
 >      ```
->    - `Invoke-WebRequest https://snaking-qualm-mandate.ngrok-free.dev/__status -UseBasicParsing`
+>    - `Invoke-WebRequest https://<your-ngrok-domain>.ngrok-free.dev/__status -UseBasicParsing`
 >      возвращает 200 (внешняя проверка)
 >
 > 5. Если на ноуте владельца уже работает ngrok с этим же доменом — он **отвалится автоматически**
@@ -65,7 +65,7 @@
 > - Перезапуск:     `Restart-Service PelicanServer, PelicanRefresher, PelicanNgrok`
 >
 > После успешного запуска расскажи мне:
-> - URL: `https://snaking-qualm-mandate.ngrok-free.dev`
+> - URL: `https://<your-ngrok-domain>.ngrok-free.dev`
 > - Сколько стратегий загружено (X-Catalog-Size в ответе `/api/strategies-full`)
 > - Сколько секунд до истечения текущего токена (`seconds_left` из `/__status`)
 
@@ -93,12 +93,12 @@
 - ≥ 2 ГБ ОЗУ (Chrome жрёт)
 - Права **Administrator**
 - Исходящий доступ в интернет (для ngrok-туннеля; входящих портов открывать не нужно — туннель сам прокидывает)
-- Доменa **не нужно** — ngrok даёт публичный HTTPS-URL `snaking-qualm-mandate.ngrok-free.dev`
+- Доменa **не нужно** — ngrok даёт публичный HTTPS-URL `<your-ngrok-domain>.ngrok-free.dev`
 
 ## Что после установки
 
 - **Локально на VPS:** `http://127.0.0.1:8787` (для отладки)
-- **Публично для друзей:** `https://snaking-qualm-mandate.ngrok-free.dev` (через ngrok)
+- **Публично для друзей:** `https://<your-ngrok-domain>.ngrok-free.dev` (через ngrok)
 - **Авто-старт после ребута:** все 3 службы в `Automatic`
 - **Авто-обновление токена:** каждые 45 мин или при < 10 мин до истечения
 - **Перелогин при истечении IdP-куки:** рефрешер использует `LIBERTEX_EMAIL`/`PASSWORD`
