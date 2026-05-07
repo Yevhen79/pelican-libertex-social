@@ -179,7 +179,9 @@ async function getCatalog(token) {
 }
 
 // ---- full catalog with stats+meta (full daily-refresh data for filters) ----
-const FULL_TTL_MS = 23 * 60 * 60 * 1000; // 23 hours so daily 11:00 Kyiv rebuild always wins
+// Long TTL: the daily 11:00 Kyiv scheduler is the only thing that should trigger rebuilds.
+// Avoids the 23h-TTL race that caused two concurrent buildFull's around restart time.
+const FULL_TTL_MS = 26 * 60 * 60 * 1000;
 const CATALOG_FILE = path.join(ROOT, '.catalog.json');
 let fullCache = { at: 0, items: null, partial: null, building: null, progress: { loaded: 0, total: 0 } };
 
@@ -391,12 +393,28 @@ async function collectDiscoverMeta(token) {
 
 function getFull(token) {
   const now = Date.now();
+  // Fresh items: return immediately.
   if (fullCache.items && (now - fullCache.at) < FULL_TTL_MS) return Promise.resolve(fullCache.items);
+  // Stale items + already rebuilding: serve stale (don't make user wait).
+  if (fullCache.items && fullCache.building) return Promise.resolve(fullCache.items);
+  // Stale items + idle: kick off background rebuild, return stale immediately.
+  if (fullCache.items && !fullCache.building) {
+    fullCache.building = (async () => {
+      const t0 = Date.now();
+      const items = await buildFull(token);
+      fullCache = { at: Date.now(), items, partial: fullCache.items, building: null, progress: { loaded: items.length, total: items.length } };
+      console.log(`[full] background-rebuilt ${items.length} enriched strategies in ${((Date.now()-t0)/1000).toFixed(1)}s`);
+      saveCatalogToDisk(items);
+      return items;
+    })();
+    return Promise.resolve(fullCache.items);
+  }
+  // No items at all: must wait.
   if (fullCache.building) return fullCache.building;
   fullCache.building = (async () => {
     const t0 = Date.now();
     const items = await buildFull(token);
-    fullCache = { at: Date.now(), items, partial: null, building: null, progress: { loaded: items.length, total: items.length } };
+    fullCache = { at: Date.now(), items, partial: items, building: null, progress: { loaded: items.length, total: items.length } };
     console.log(`[full] built ${items.length} enriched strategies in ${((Date.now()-t0)/1000).toFixed(1)}s`);
     saveCatalogToDisk(items);
     return items;
@@ -433,8 +451,13 @@ function startDailyScheduler() {
     if (h === 11 && m === 0 && lastBuildKyivDay !== day) {
       lastBuildKyivDay = day;
       console.log(`[scheduler] daily 11:00 Kyiv rebuild (${day})`);
+      // Keep yesterday's items live during the rebuild — only invalidate the timestamp
+      // so getFull picks up the stale-while-revalidate path. This way the API never
+      // returns 0 items just because a rebuild kicked off.
       catalogCache = { at: 0, items: null, building: null };
-      fullCache = { at: 0, items: null, partial: null, building: null, progress: { loaded: 0, total: 0 } };
+      fullCache.at = 0;
+      fullCache.partial = fullCache.items || fullCache.partial;
+      fullCache.building = null;
       const env = readEnv();
       if (env.ACCESS_TOKEN) {
         getFull(env.ACCESS_TOKEN).catch(e => console.error('[scheduler] rebuild failed:', e.message));
@@ -603,18 +626,24 @@ const server = http.createServer((req, res) => {
     if (!env.ACCESS_TOKEN) { res.writeHead(503); return res.end('no_token'); }
     const allowPartial = u.query.partial === '1';
     const onlyEnabled = arr => arr.filter(s => s.IsEnabled !== false);
-    if (allowPartial && fullCache.partial && !fullCache.items) {
-      const out = onlyEnabled(fullCache.partial);
-      res.writeHead(200, {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'X-Catalog-Building': '1',
-        'X-Catalog-Size': String(out.length),
-        'X-Catalog-Loaded': String(fullCache.progress.loaded),
-      });
-      res.end(JSON.stringify(out));
-      getFull(env.ACCESS_TOKEN).catch(()=>{});
-      return;
+    // Partial mode: prefer items if we have them (fresh or stale), fall back to partial
+    // (in-flight build's pre-fill). Either way the user sees something instead of waiting.
+    if (allowPartial) {
+      const src = fullCache.items || fullCache.partial;
+      if (src) {
+        const out = onlyEnabled(src);
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'X-Catalog-Building': fullCache.building ? '1' : '0',
+          'X-Catalog-Size': String(out.length),
+          'X-Catalog-Loaded': String(fullCache.progress.loaded),
+        });
+        res.end(JSON.stringify(out));
+        // touch getFull so a stale-while-revalidate kick happens if needed
+        getFull(env.ACCESS_TOKEN).catch(()=>{});
+        return;
+      }
     }
     getFull(env.ACCESS_TOKEN).then(items => {
       const out = onlyEnabled(items);
