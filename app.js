@@ -313,7 +313,7 @@ function rowHtml(s) {
     <div class="c-num" data-label="Age">${fmtAge(age)}</div>
     <div class="c-num" data-label="Balance">${fmtMoney(s.AccountBalance)}</div>
     <div class="c-num" data-label="Fee">${fmtFee(s)}</div>
-    <div class="c-link"><a class="signal-link" data-link href="${link}" target="_blank" rel="noopener">Get connected</a></div>
+    <div class="c-link"><a class="signal-link" data-link href="${link}" target="_blank" rel="noopener">Subscribe</a></div>
   </div>`;
 
   let marketsHtml;
