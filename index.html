@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,10 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css?v=20260508">
+<link rel="stylesheet" href="/styles.css?v=20260508d">
 <script>
-  // Suppress the welcome modal early (before body paints) if it was dismissed within 30 min.
-  // Inline + synchronous so we never flash the modal at returning visitors.
+  // Suppress the welcome modal early (before body paints) if dismissed within 30 min.
+  // Also pick the language synchronously so static strings paint correct on first frame.
   (function () {
     try {
       var t = parseInt(localStorage.getItem('pelican-welcome-dismissed-at') || '0', 10);
@@ -19,6 +19,15 @@
         document.documentElement.classList.add('welcome-suppressed');
       }
     } catch (e) { /* localStorage blocked — show the modal */ }
+    try {
+      var lang = localStorage.getItem('pelican-lang');
+      if (lang !== 'ru' && lang !== 'en') {
+        var nav = (navigator.language || '').toLowerCase();
+        lang = (nav.indexOf('ru') === 0 || nav.indexOf('uk') === 0 || nav.indexOf('be') === 0) ? 'ru' : 'en';
+      }
+      document.documentElement.lang = lang;
+      document.documentElement.dataset.lang = lang;
+    } catch (e) {}
   })();
 </script>
 </head>
@@ -26,63 +35,70 @@
 <div id="welcome-modal" class="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
   <div class="welcome-backdrop" id="welcome-backdrop" aria-hidden="true"></div>
   <div class="welcome-panel">
-    <button id="welcome-close" class="welcome-close" type="button" aria-label="Закрыть">×</button>
+    <button id="welcome-close" class="welcome-close" type="button" data-i18n-aria="Close" aria-label="Close">×</button>
     <div class="welcome-brand">
       <span class="welcome-logo-tile" aria-hidden="true"><img src="/logo.png" alt=""></span>
       <span class="welcome-brand-text">
         <span class="welcome-brand-name"><span>LIBERTEX</span><span>SOCIAL</span></span>
-        <span class="welcome-brand-sub">Copy Trading</span>
+        <span class="welcome-brand-sub" data-i18n="Copy Trading">Copy Trading</span>
       </span>
     </div>
-    <h1 id="welcome-title" class="welcome-title">Начните зарабатывать больше, копируя сделки профессионалов в Libertex</h1>
-    <p class="welcome-desc">Зачем учиться на своих ошибках, если можно перенимать опыт лучших? Подключайтесь к успешным трейдерам, копируйте их стратегии и зарабатывайте на финансовых рынках — <b>подходит даже тем, у кого нет опыта в торговле</b>. Разумный трейдинг и быстрый рост!</p>
-    <div class="welcome-section-label">Как это работает</div>
-    <ol class="welcome-steps">
-      <li class="welcome-step">
-        <span class="welcome-step-num">1</span>
-        <div>
-          <div class="welcome-step-title">Скачайте приложение</div>
-          <div class="welcome-step-desc">Доступно для iOS и Android</div>
+    <div class="welcome-body">
+      <div class="welcome-anim-wrap" aria-hidden="true">
+        <img src="/promo.gif" alt="" class="welcome-anim" loading="lazy">
+      </div>
+      <div class="welcome-content">
+        <h1 id="welcome-title" class="welcome-title" data-i18n="Start earning more by copying the trades of professionals on Libertex">Start earning more by copying the trades of professionals on Libertex</h1>
+        <p class="welcome-desc" data-i18n-html="welcome.desc">Why learn from your own mistakes when you can adopt the experience of the best? Connect to successful traders, copy their strategies, and earn on the financial markets — <b>suitable even for those with no trading experience</b>. Smart trading and fast growth!</p>
+        <div class="welcome-section-label" data-i18n="How it works">How it works</div>
+        <ol class="welcome-steps">
+          <li class="welcome-step">
+            <span class="welcome-step-num">1</span>
+            <div>
+              <div class="welcome-step-title" data-i18n="Download the app">Download the app</div>
+              <div class="welcome-step-desc" data-i18n="Available for iOS and Android">Available for iOS and Android</div>
+            </div>
+          </li>
+          <li class="welcome-step">
+            <span class="welcome-step-num">2</span>
+            <div>
+              <div class="welcome-step-title" data-i18n="Quick registration">Quick registration</div>
+              <div class="welcome-step-desc" data-i18n="Use the e-mail from your Libertex account">Use the e-mail from your Libertex account</div>
+            </div>
+          </li>
+          <li class="welcome-step">
+            <span class="welcome-step-num">3</span>
+            <div>
+              <div class="welcome-step-title" data-i18n="Link your MetaTrader account">Link your MetaTrader account</div>
+              <div class="welcome-step-desc" data-i18n-html="welcome.step3.desc">Copy the credentials from the «More» section in the Libertex app and paste them into the «Account» section in the Copy&nbsp;Trading app</div>
+            </div>
+          </li>
+          <li class="welcome-step">
+            <span class="welcome-step-num">4</span>
+            <div>
+              <div class="welcome-step-title" data-i18n="Choose a top trader">Choose a top trader</div>
+              <div class="welcome-step-desc" data-i18n="Browse profiles and pick one whose strategy fits you">Browse profiles and pick one whose strategy fits you</div>
+            </div>
+          </li>
+          <li class="welcome-step">
+            <span class="welcome-step-num">5</span>
+            <div>
+              <div class="welcome-step-title" data-i18n="Automatic copying">Automatic copying</div>
+              <div class="welcome-step-desc" data-i18n="The system replicates the chosen trader's deals in real time">The system replicates the chosen trader's deals in real time</div>
+            </div>
+          </li>
+        </ol>
+        <div class="welcome-bonus">
+          <span class="welcome-bonus-icon" aria-hidden="true">📊</span>
+          <div>
+            <div class="welcome-step-title" data-i18n="Track the result">Track the result</div>
+            <div class="welcome-step-desc" data-i18n="Monitor profitability, change settings or pause at any time">Monitor profitability, change settings or pause at any time</div>
+          </div>
         </div>
-      </li>
-      <li class="welcome-step">
-        <span class="welcome-step-num">2</span>
-        <div>
-          <div class="welcome-step-title">Быстрая регистрация</div>
-          <div class="welcome-step-desc">Используйте e-mail от вашего аккаунта Libertex</div>
-        </div>
-      </li>
-      <li class="welcome-step">
-        <span class="welcome-step-num">3</span>
-        <div>
-          <div class="welcome-step-title">Привяжите счёт MetaTrader</div>
-          <div class="welcome-step-desc">Скопируйте данные из раздела «Ещё» в приложении Libertex и вставьте их в раздел «Счёт» в приложении Copy&nbsp;Trading</div>
-        </div>
-      </li>
-      <li class="welcome-step">
-        <span class="welcome-step-num">4</span>
-        <div>
-          <div class="welcome-step-title">Выберите топ-трейдера</div>
-          <div class="welcome-step-desc">Изучите профили и выберите того, чья стратегия вам подходит</div>
-        </div>
-      </li>
-      <li class="welcome-step">
-        <span class="welcome-step-num">5</span>
-        <div>
-          <div class="welcome-step-title">Автоматическое копирование</div>
-          <div class="welcome-step-desc">Система повторяет сделки выбранного трейдера в реальном времени</div>
-        </div>
-      </li>
-    </ol>
-    <div class="welcome-bonus">
-      <span class="welcome-bonus-icon" aria-hidden="true">📊</span>
-      <div>
-        <div class="welcome-step-title">Следите за результатом</div>
-        <div class="welcome-step-desc">Отслеживайте доходность, меняйте настройки или ставьте функцию на паузу в любой момент</div>
+        <button id="welcome-cta" class="welcome-cta" type="button"><span data-i18n="Start now">Start now</span><span aria-hidden="true">↗</span></button>
+        <p class="welcome-tag" data-i18n="Let the experts' experience work for you!">Let the experts' experience work for you!</p>
       </div>
     </div>
-    <button id="welcome-cta" class="welcome-cta" type="button">Начать сейчас<span aria-hidden="true">↗</span></button>
-    <p class="welcome-tag">Пусть опыт экспертов работает на вас!</p>
   </div>
 </div>
 <header>
@@ -92,65 +108,66 @@
     </span>
     <span class="brand-text">
       <span class="brand-name"><span>LIBERTEX</span><span>SOCIAL</span></span>
-      <span class="brand-sub">Copy Trading</span>
+      <span class="brand-sub" data-i18n="Copy Trading">Copy Trading</span>
     </span>
   </a>
-  <input id="search" type="search" placeholder="Search by signal name…" autocomplete="off">
-  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="toggle theme" title="Toggle dark mode">
+  <input id="search" type="search" data-i18n-placeholder="Search by signal name…" placeholder="Search by signal name…" autocomplete="off">
+  <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Switch language" title="Switch language">RU</button>
+  <button id="theme-toggle" class="theme-toggle" type="button" data-i18n-aria="Toggle dark mode" aria-label="toggle theme" data-i18n-title="Toggle dark mode" title="Toggle dark mode">
     <span class="theme-icon">🌙</span>
   </button>
 </header>
 
 <main>
   <div id="toolbar">
-    <button id="filters-toggle" class="btn-flat filters-toggle" type="button" aria-expanded="false">Filters</button>
+    <button id="filters-toggle" class="btn-flat filters-toggle" type="button" aria-expanded="false" data-i18n="Filters">Filters</button>
     <div id="counts">…</div>
     <div class="sort">
-      <label>Sort:</label>
+      <label data-i18n="Sort:">Sort:</label>
       <select id="sort">
-        <option value="return-desc">Return ↓</option>
-        <option value="return-asc">Return ↑</option>
-        <option value="copiers-desc">Copiers ↓</option>
-        <option value="copiers-asc">Copiers ↑</option>
-        <option value="aum-desc">Copiers AUM ↓</option>
-        <option value="aum-asc">Copiers AUM ↑</option>
-        <option value="dd-asc">Drawdown ↑</option>
-        <option value="dd-desc">Drawdown ↓</option>
-        <option value="fee-asc">Fee ↑</option>
-        <option value="fee-desc">Fee ↓</option>
-        <option value="age-desc">Age ↓</option>
-        <option value="age-asc">Age ↑</option>
-        <option value="balance-desc">Balance ↓</option>
-        <option value="balance-asc">Balance ↑</option>
-        <option value="winrate-desc">Win Rate ↓</option>
-        <option value="winrate-asc">Win Rate ↑</option>
-        <option value="trades-desc">Trades ↓</option>
-        <option value="trades-asc">Trades ↑</option>
-        <option value="monthly-desc">Monthly Profit ↓</option>
-        <option value="monthly-asc">Monthly Profit ↑</option>
+        <option value="return-desc" data-i18n="Return ↓">Return ↓</option>
+        <option value="return-asc" data-i18n="Return ↑">Return ↑</option>
+        <option value="copiers-desc" data-i18n="Copiers ↓">Copiers ↓</option>
+        <option value="copiers-asc" data-i18n="Copiers ↑">Copiers ↑</option>
+        <option value="aum-desc" data-i18n="Copiers AUM ↓">Copiers AUM ↓</option>
+        <option value="aum-asc" data-i18n="Copiers AUM ↑">Copiers AUM ↑</option>
+        <option value="dd-asc" data-i18n="Drawdown ↑">Drawdown ↑</option>
+        <option value="dd-desc" data-i18n="Drawdown ↓">Drawdown ↓</option>
+        <option value="fee-asc" data-i18n="Fee ↑">Fee ↑</option>
+        <option value="fee-desc" data-i18n="Fee ↓">Fee ↓</option>
+        <option value="age-desc" data-i18n="Age ↓">Age ↓</option>
+        <option value="age-asc" data-i18n="Age ↑">Age ↑</option>
+        <option value="balance-desc" data-i18n="Balance ↓">Balance ↓</option>
+        <option value="balance-asc" data-i18n="Balance ↑">Balance ↑</option>
+        <option value="winrate-desc" data-i18n="Win Rate ↓">Win Rate ↓</option>
+        <option value="winrate-asc" data-i18n="Win Rate ↑">Win Rate ↑</option>
+        <option value="trades-desc" data-i18n="Trades ↓">Trades ↓</option>
+        <option value="trades-asc" data-i18n="Trades ↑">Trades ↑</option>
+        <option value="monthly-desc" data-i18n="Monthly Profit ↓">Monthly Profit ↓</option>
+        <option value="monthly-asc" data-i18n="Monthly Profit ↑">Monthly Profit ↑</option>
       </select>
     </div>
-    <button id="refresh" class="btn-flat" title="reload via /api/discover">↻ reload</button>
+    <button id="refresh" class="btn-flat" data-i18n-title="reload via /api/discover" title="reload via /api/discover" data-i18n="↻ reload">↻ reload</button>
   </div>
 
   <aside id="filters">
     <div class="fgroup">
       <div class="ftitle-row">
-        <label class="ftitle">Risk</label>
-        <button id="reset" class="btn-reset" type="button">reset filters</button>
+        <label class="ftitle" data-i18n="Risk">Risk</label>
+        <button id="reset" class="btn-reset" type="button" data-i18n="reset filters">reset filters</button>
       </div>
       <div class="chips" id="risk-chips">
-        <button class="chip" data-risk="Low">Low</button>
-        <button class="chip" data-risk="Medium">Medium</button>
-        <button class="chip" data-risk="High">High</button>
+        <button class="chip" data-risk="Low" data-i18n="Low">Low</button>
+        <button class="chip" data-risk="Medium" data-i18n="Medium">Medium</button>
+        <button class="chip" data-risk="High" data-i18n="High">High</button>
       </div>
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Your Investment Amount, $</label><span class="fval" id="invest-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Your Investment Amount, $">Your Investment Amount, $</label><span class="fval" id="invest-val" data-i18n="any">any</span></div>
       <input id="invest-amount" type="number" min="50" step="50" placeholder="e.g. 5000" autocomplete="off">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Return %</label><span class="fval" id="ret-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Return %">Return %</label><span class="fval" id="ret-val" data-i18n="any">any</span></div>
       <div class="dual-track" id="ret-track">
         <input class="range-dual" id="ret-min" type="range" min="0" max="100" step="1" value="0">
         <input class="range-dual" id="ret-max" type="range" min="0" max="100" step="1" value="100">
@@ -160,11 +177,11 @@
       <div class="scale"><span>0%</span><span>200%</span><span>50K%+</span></div>
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Max Drawdown ≤</label><span class="fval" id="dd-max-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Max Drawdown ≤">Max Drawdown ≤</label><span class="fval" id="dd-max-val" data-i18n="any">any</span></div>
       <input class="range" id="dd-max" type="range" min="0" max="100" step="5" value="100">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Balance</label><span class="fval" id="balance-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Balance">Balance</label><span class="fval" id="balance-val" data-i18n="any">any</span></div>
       <div class="dual-track" id="balance-track">
         <input class="range-dual" id="balance-min" type="range" min="0" max="100" step="1" value="0">
         <input class="range-dual" id="balance-max" type="range" min="0" max="100" step="1" value="100">
@@ -174,27 +191,27 @@
       <div class="scale"><span>$0</span><span>$10K</span><span>$10M</span></div>
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Mgmt Fee ≤</label><span class="fval" id="fee-max-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Mgmt Fee ≤">Mgmt Fee ≤</label><span class="fval" id="fee-max-val" data-i18n="any">any</span></div>
       <input class="range" id="fee-max" type="range" min="0" max="100" step="5" value="100">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Copiers AUM ≥</label><span class="fval" id="aum-min-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Copiers AUM ≥">Copiers AUM ≥</label><span class="fval" id="aum-min-val" data-i18n="any">any</span></div>
       <input class="range" id="aum-min" type="range" min="0" max="5000000" step="50000" value="0">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Copiers ≥</label><span class="fval" id="copiers-min-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Copiers ≥">Copiers ≥</label><span class="fval" id="copiers-min-val" data-i18n="any">any</span></div>
       <input class="range" id="copiers-min" type="range" min="0" max="3000" step="10" value="0">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Age ≥ (days)</label><span class="fval" id="age-min-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Age ≥ (days)">Age ≥ (days)</label><span class="fval" id="age-min-val" data-i18n="any">any</span></div>
       <input class="range" id="age-min" type="range" min="0" max="3000" step="10" value="0">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Trades ≥</label><span class="fval" id="trades-min-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Trades ≥">Trades ≥</label><span class="fval" id="trades-min-val" data-i18n="any">any</span></div>
       <input class="range" id="trades-min" type="range" min="0" max="10000" step="50" value="0">
     </div>
     <div class="fgroup">
-      <div class="ftitle-row"><label class="ftitle">Win Rate ≥</label><span class="fval" id="winrate-min-val">any</span></div>
+      <div class="ftitle-row"><label class="ftitle" data-i18n="Win Rate ≥">Win Rate ≥</label><span class="fval" id="winrate-min-val" data-i18n="any">any</span></div>
       <input class="range" id="winrate-min" type="range" min="0" max="100" step="5" value="0">
     </div>
   </aside>
@@ -202,15 +219,15 @@
   <section id="list-wrap">
     <div class="table">
       <div id="head" class="row head">
-        <div>Name</div>
-        <div>Equity curve</div>
-        <div class="c-num sortable" data-sort="return">Return %</div>
-        <div class="c-num sortable" data-sort="copiers">Copiers</div>
-        <div class="c-num sortable" data-sort="aum">Copiers AUM</div>
-        <div class="c-num sortable" data-sort="dd">Max Drawdown</div>
-        <div class="c-num sortable" data-sort="age">Age</div>
-        <div class="c-num sortable" data-sort="balance">Balance</div>
-        <div class="c-num sortable" data-sort="fee">Mgmt Fee %</div>
+        <div data-i18n="Name">Name</div>
+        <div data-i18n="Equity curve">Equity curve</div>
+        <div class="c-num sortable" data-sort="return" data-i18n="Return %">Return %</div>
+        <div class="c-num sortable" data-sort="copiers" data-i18n="Copiers">Copiers</div>
+        <div class="c-num sortable" data-sort="aum" data-i18n="Copiers AUM">Copiers AUM</div>
+        <div class="c-num sortable" data-sort="dd" data-i18n="Max Drawdown">Max Drawdown</div>
+        <div class="c-num sortable" data-sort="age" data-i18n="Age">Age</div>
+        <div class="c-num sortable" data-sort="balance" data-i18n="Balance">Balance</div>
+        <div class="c-num sortable" data-sort="fee" data-i18n="Mgmt Fee %">Mgmt Fee %</div>
         <div></div>
       </div>
       <div id="list"></div>
@@ -221,6 +238,6 @@
   </section>
 </main>
 
-<script src="/app.js?v=20260508"></script>
+<script src="/app.js?v=20260508d"></script>
 </body>
 </html>

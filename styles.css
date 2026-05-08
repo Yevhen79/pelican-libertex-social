@@ -23,7 +23,7 @@ body.welcome-open { overflow: hidden; }
 }
 .welcome-panel {
   position: relative; z-index: 1;
-  width: 100%; max-width: 720px;
+  width: 100%; max-width: 920px;
   background: linear-gradient(180deg, rgba(28, 32, 38, .96), rgba(20, 23, 28, .96));
   border: 1px solid rgba(255, 255, 255, .10);
   border-radius: 18px;
@@ -32,6 +32,27 @@ body.welcome-open { overflow: hidden; }
   color: #ecedef;
   animation: welcome-pop .35s cubic-bezier(.2, .8, .2, 1);
 }
+.welcome-body {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.welcome-anim-wrap {
+  position: sticky; top: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 102, 51, .12), rgba(255, 102, 51, .03));
+  border: 1px solid rgba(255, 102, 51, .25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  aspect-ratio: 272 / 500;
+  display: flex; align-items: center; justify-content: center;
+}
+.welcome-anim {
+  width: 100%; height: 100%;
+  display: block; object-fit: cover;
+}
+.welcome-content { min-width: 0; }
 @keyframes welcome-pop {
   from { opacity: 0; transform: translateY(12px) scale(.98); }
   to   { opacity: 1; transform: translateY(0)    scale(1); }
@@ -176,6 +197,13 @@ html[data-theme="light"] .welcome-backdrop { background: rgba(20, 30, 20, .55); 
   .welcome-logo-tile { width: 48px; height: 48px; border-radius: 10px; }
   .welcome-brand-name { font-size: 17px; line-height: 17px; }
   .welcome-brand-sub  { font-size: 11px; line-height: 12px; }
+  .welcome-body { grid-template-columns: 1fr; gap: 18px; }
+  .welcome-anim-wrap {
+    position: static;
+    max-width: 200px;
+    margin: 0 auto;
+    aspect-ratio: 272 / 500;
+  }
   .welcome-title { font-size: 20px; line-height: 1.22; margin-bottom: 12px; }
   .welcome-desc  { font-size: 13.5px; margin-bottom: 22px; }
   .welcome-section-label { margin-bottom: 12px; }
@@ -263,10 +291,18 @@ header {
   width:38px; height:38px; padding:0; background:transparent; cursor:pointer;
   border:1.5px solid var(--line); border-radius:8px; color:var(--text);
   font-family:inherit; font-size:16px; line-height:1; transition:border-color .15s, background .15s;
-  margin-left:auto;
 }
 .theme-toggle:hover { border-color:var(--orange); }
 .theme-toggle .theme-icon { display:inline-block; transform:translateY(-1px); }
+.lang-toggle {
+  display:inline-flex; align-items:center; justify-content:center;
+  height:38px; padding:0 12px; background:transparent; cursor:pointer;
+  border:1.5px solid var(--line); border-radius:8px; color:var(--text);
+  font-family:inherit; font-size:13px; font-weight:700; letter-spacing:0.04em; line-height:1;
+  transition:border-color .15s, background .15s, color .15s;
+  margin-left:auto;
+}
+.lang-toggle:hover { border-color:var(--orange); color:var(--orange); }
 .brand { display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; font-family:'Mont','Manrope',sans-serif; }
 .logo-tile {
   display:flex; align-items:center; justify-content:center;
@@ -770,6 +806,7 @@ html[data-theme="light"] .trade { background:rgba(0,0,0,.02); }
   .brand-sub  { font-size:9.5px; line-height:11px; }
   header input[type=search] { padding:8px 10px; font-size:13px; max-width:none; min-width:0; }
   .theme-toggle { width:34px; height:34px; font-size:14px; }
+  .lang-toggle { height:34px; padding:0 9px; font-size:12px; }
 
   main { padding:12px; gap:12px; }
 

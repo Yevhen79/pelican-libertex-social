@@ -1,5 +1,197 @@
 'use strict';
 
+// ---- i18n ----
+// English text is the canonical source (used as both keys and values for the EN locale).
+// Russian translations live in I18N_RU keyed by the English string.
+const I18N_RU = {
+  // Header / brand
+  'Copy Trading': 'Copy Trading',
+  'Search by signal name…': 'Поиск по названию сигнала…',
+  'Toggle dark mode': 'Сменить тему',
+
+  // Toolbar
+  'Filters': 'Фильтры',
+  'Hide filters': 'Скрыть фильтры',
+  'Sort:': 'Сортировка:',
+  '↻ reload': '↻ обновить',
+  'Showing': 'Показано',
+  'of': 'из',
+  'page': 'стр.',
+  'go to': 'перейти на',
+  '‹ prev': '‹ назад',
+  'next ›': 'вперёд ›',
+
+  // Sidebar filters
+  'Risk': 'Риск',
+  'reset filters': 'сбросить фильтры',
+  'Low': 'Низкий',
+  'Medium': 'Средний',
+  'High': 'Высокий',
+  'Your Investment Amount, $': 'Ваш инвест. бюджет, $',
+  'Return %': 'Доходность %',
+  'Max Drawdown ≤': 'Макс. просадка ≤',
+  'Balance': 'Баланс',
+  'Mgmt Fee ≤': 'Комиссия ≤',
+  'Copiers AUM ≥': 'Объём копиров. ≥',
+  'Copiers ≥': 'Копировщиков ≥',
+  'Age ≥ (days)': 'Возраст ≥ (дн.)',
+  'Trades ≥': 'Сделок ≥',
+  'Win Rate ≥': 'Win Rate ≥',
+  'any': 'любой',
+
+  // Table column headers
+  'Name': 'Название',
+  'Equity curve': 'График доходности',
+  'Return %': 'Доходность %',
+  'Copiers': 'Копировщики',
+  'Copiers AUM': 'Объём копиров.',
+  'Max Drawdown': 'Макс. просадка',
+  'Age': 'Возраст',
+  'Mgmt Fee %': 'Комиссия %',
+
+  // Misc
+  'reload via /api/discover': 'обновить через /api/discover',
+  'Close': 'Закрыть',
+
+  // Sort dropdown
+  'Return ↓': 'Доходность ↓',
+  'Return ↑': 'Доходность ↑',
+  'Copiers ↓': 'Копировщики ↓',
+  'Copiers ↑': 'Копировщики ↑',
+  'Copiers AUM ↓': 'Объём ↓',
+  'Copiers AUM ↑': 'Объём ↑',
+  'Drawdown ↑': 'Просадка ↑',
+  'Drawdown ↓': 'Просадка ↓',
+  'Fee ↑': 'Комиссия ↑',
+  'Fee ↓': 'Комиссия ↓',
+  'Age ↓': 'Возраст ↓',
+  'Age ↑': 'Возраст ↑',
+  'Balance ↓': 'Баланс ↓',
+  'Balance ↑': 'Баланс ↑',
+  'Win Rate ↓': 'Win Rate ↓',
+  'Win Rate ↑': 'Win Rate ↑',
+  'Trades ↓': 'Сделок ↓',
+  'Trades ↑': 'Сделок ↑',
+  'Monthly Profit ↓': 'Прибыль/мес ↓',
+  'Monthly Profit ↑': 'Прибыль/мес ↑',
+
+  // Row CTA + state
+  'Subscribe': 'Подписаться',
+  'free': 'бесплатно',
+  'Free': 'Бесплатно',
+  'No matches.': 'Ничего не найдено.',
+
+  // Card data labels (mobile)
+  'Return': 'Доходность',
+  'Max DD': 'Макс DD',
+  'Fee': 'Комиссия',
+
+  // Expanded panel
+  'Monthly profit': 'Прибыль за месяц',
+  'Realized P/L': 'Реализ. P/L',
+  'Win Rate': 'Win Rate',
+  'Loss Rate': 'Loss Rate',
+  'Trades total': 'Всего сделок',
+  'Yearly profit': 'Прибыль за год',
+  'Currency': 'Валюта',
+  'Traded markets': 'Торгуемые рынки',
+  'no market data': 'нет данных по рынкам',
+  'loading markets…': 'загрузка рынков…',
+  'click row to load markets': 'нажмите для загрузки',
+
+  // Trades sections
+  'Open Trades': 'Открытые сделки',
+  'Trade History': 'История сделок',
+  'no data': 'нет данных',
+  'no open positions': 'нет открытых позиций',
+  'no closed signals in the last 30 days': 'нет закрытых сделок за 30 дней',
+  'loading…': 'загрузка…',
+
+  // Risk pill labels (in expanded panel)
+  'Unsuitable': 'Неподходящий',
+
+  // Loadmore strings
+  'Full catalog of': 'Полный каталог из',
+  'strategies loaded · rebuilt daily at 11:00 Kyiv time': 'стратегий · обновляется ежедневно в 11:00 (Киев)',
+  'Building full catalog:': 'Сборка каталога:',
+  'strategies': 'стратегий',
+  'upstream rate-limited': 'rate-limit от upstream',
+  'All': 'Все',
+  'strategies are visible. Stats fill in as the build progresses; refresh of data every 20 sec.': 'стратегий видны. Статистика подгружается по мере сборки; обновление каждые 20 сек.',
+
+  // Welcome modal
+  'Start earning more by copying the trades of professionals on Libertex': 'Начните зарабатывать больше, копируя сделки профессионалов в Libertex',
+  'welcome.desc': 'Зачем учиться на своих ошибках, если можно перенимать опыт лучших? Подключайтесь к успешным трейдерам, копируйте их стратегии и зарабатывайте на финансовых рынках — <b>подходит даже тем, у кого нет опыта в торговле</b>. Разумный трейдинг и быстрый рост!',
+  'How it works': 'Как это работает',
+  'Download the app': 'Скачайте приложение',
+  'Available for iOS and Android': 'Доступно для iOS и Android',
+  'Quick registration': 'Быстрая регистрация',
+  'Use the e-mail from your Libertex account': 'Используйте e-mail от вашего аккаунта Libertex',
+  'Link your MetaTrader account': 'Привяжите счёт MetaTrader',
+  'welcome.step3.desc': 'Скопируйте данные из раздела «Ещё» в приложении Libertex и вставьте их в раздел «Счёт» в приложении Copy&nbsp;Trading',
+  'Choose a top trader': 'Выберите топ-трейдера',
+  'Browse profiles and pick one whose strategy fits you': 'Изучите профили и выберите того, чья стратегия вам подходит',
+  'Automatic copying': 'Автоматическое копирование',
+  'The system replicates the chosen trader\'s deals in real time': 'Система повторяет сделки выбранного трейдера в реальном времени',
+  'Track the result': 'Следите за результатом',
+  'Monitor profitability, change settings or pause at any time': 'Отслеживайте доходность, меняйте настройки или ставьте на паузу в любой момент',
+  'Start now': 'Начать сейчас',
+  'Let the experts\' experience work for you!': 'Пусть опыт экспертов работает на вас!',
+  'Close': 'Закрыть',
+};
+
+let LANG = (function () {
+  let saved = null;
+  try { saved = localStorage.getItem('pelican-lang'); } catch (e) {}
+  if (saved === 'ru' || saved === 'en') return saved;
+  const nav = (navigator.language || '').toLowerCase();
+  return nav.startsWith('ru') || nav.startsWith('uk') || nav.startsWith('be') ? 'ru' : 'en';
+})();
+function t(s) { return LANG === 'ru' ? (I18N_RU[s] || s) : s; }
+function setLang(lang) {
+  if (lang !== 'ru' && lang !== 'en') return;
+  LANG = lang;
+  try { localStorage.setItem('pelican-lang', lang); } catch (e) {}
+  document.documentElement.lang = lang;
+  applyI18n();
+  if (typeof scheduleRender === 'function') scheduleRender();
+}
+function applyI18n() {
+  // Cache original on-page content the first time we see each element so we
+  // can restore it when switching back to English (works even when the
+  // data-i18n key is an abstract id like 'welcome.desc' that is not a
+  // natural-English string).
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (!key) return;
+    if (el.dataset.i18nOrig == null) el.dataset.i18nOrig = el.textContent;
+    el.textContent = (LANG === 'ru' && I18N_RU[key]) ? I18N_RU[key] : el.dataset.i18nOrig;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if (!key) return;
+    if (el.dataset.i18nOrigHtml == null) el.dataset.i18nOrigHtml = el.innerHTML;
+    el.innerHTML = (LANG === 'ru' && I18N_RU[key]) ? I18N_RU[key] : el.dataset.i18nOrigHtml;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (!key) return;
+    if (el.dataset.i18nOrigPh == null) el.dataset.i18nOrigPh = el.placeholder || '';
+    el.placeholder = (LANG === 'ru' && I18N_RU[key]) ? I18N_RU[key] : el.dataset.i18nOrigPh;
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.dataset.i18nAria;
+    if (!key) return;
+    if (el.dataset.i18nOrigAria == null) el.dataset.i18nOrigAria = el.getAttribute('aria-label') || '';
+    el.setAttribute('aria-label', (LANG === 'ru' && I18N_RU[key]) ? I18N_RU[key] : el.dataset.i18nOrigAria);
+  });
+  // Reflect on the toggle button
+  const tg = document.getElementById('lang-toggle');
+  if (tg) tg.textContent = LANG === 'ru' ? 'EN' : 'RU';
+}
+document.documentElement.lang = LANG;
+document.addEventListener('DOMContentLoaded', applyI18n);
+
 // ---- Welcome modal ----
 // Shown on every visit unless dismissed within the last 30 minutes.
 // The inline <head> script in index.html already adds .welcome-suppressed
@@ -80,7 +272,7 @@ function fmtMoneyFull(v) {
 function fmtNum(v) { return v == null ? '—' : Number(v).toLocaleString('en-US'); }
 function fmtFee(s) {
   if (s.Fee != null) return (Number(s.Fee) * 100).toFixed(0) + '%';
-  if (s._meta) return '<span class="free-cell">Free</span>';
+  if (s._meta) return '<span class="free-cell">' + t('Free') + '</span>';
   return '<span class="dim">—</span>';
 }
 function fmtTradeTime(iso) {
@@ -285,10 +477,10 @@ function render() {
   const startIdx = (STATE.page - 1) * PAGE_SIZE;
   const pageItems = ordered.slice(startIdx, startIdx + PAGE_SIZE);
 
-  counts.innerHTML = `Showing <b>${ordered.length}</b> of <b>${STATE.total || all.length}</b>
-    · page <b>${STATE.page}</b> / ${totalPages}`;
+  counts.innerHTML = `${t('Showing')} <b>${ordered.length}</b> ${t('of')} <b>${STATE.total || all.length}</b>
+    · ${t('page')} <b>${STATE.page}</b> / ${totalPages}`;
 
-  const html = pageItems.map(rowHtml).join('') || '<div style="padding:60px 20px;text-align:center;color:var(--muted)">No matches.</div>';
+  const html = pageItems.map(rowHtml).join('') || `<div style="padding:60px 20px;text-align:center;color:var(--muted)">${t('No matches.')}</div>`;
   list.innerHTML = html;
 
   // Background-fill: catalog rows that came back from the daily build with empty meta/stats
@@ -330,14 +522,14 @@ function rowHtml(s) {
       </div>
     </div>
     <div class="c-spark" data-label="Equity curve">${sparkline(s.History)}</div>
-    <div class="c-num" data-label="Return">${fmtPct(s.Return, 1)}</div>
-    <div class="c-num" data-label="Copiers">${fmtNum(s.NumCopiers)}</div>
-    <div class="c-num" data-label="Copiers AUM">${fmtMoney(s.CopiersAUM)}</div>
-    <div class="c-num" data-label="Max DD">${s.MaxDD != null ? fmtPct(s.MaxDD, 2) : '—'}</div>
-    <div class="c-num" data-label="Age">${fmtAge(age)}</div>
-    <div class="c-num" data-label="Balance">${fmtMoney(s.AccountBalance)}</div>
-    <div class="c-num" data-label="Fee">${fmtFee(s)}</div>
-    <div class="c-link"><a class="signal-link" data-link href="${link}" target="_blank" rel="noopener">Subscribe</a></div>
+    <div class="c-num" data-label="${t('Return')}">${fmtPct(s.Return, 1)}</div>
+    <div class="c-num" data-label="${t('Copiers')}">${fmtNum(s.NumCopiers)}</div>
+    <div class="c-num" data-label="${t('Copiers AUM')}">${fmtMoney(s.CopiersAUM)}</div>
+    <div class="c-num" data-label="${t('Max DD')}">${s.MaxDD != null ? fmtPct(s.MaxDD, 2) : '—'}</div>
+    <div class="c-num" data-label="${t('Age')}">${fmtAge(age)}</div>
+    <div class="c-num" data-label="${t('Balance')}">${fmtMoney(s.AccountBalance)}</div>
+    <div class="c-num" data-label="${t('Fee')}">${fmtFee(s)}</div>
+    <div class="c-link"><a class="signal-link" data-link href="${link}" target="_blank" rel="noopener">${t('Subscribe')}</a></div>
   </div>`;
 
   let marketsHtml;
@@ -348,29 +540,29 @@ function rowHtml(s) {
       return `<span class="market-tag" title="${m.c} trades · ${pct}%">${escapeHtml(m.n)} <span class="market-count">${m.c}</span></span>`;
     }).join('');
   } else if (s._marketsLoading) {
-    marketsHtml = '<span class="dim"><span class="spinner"></span>loading markets…</span>';
+    marketsHtml = `<span class="dim"><span class="spinner"></span>${t('loading markets…')}</span>`;
   } else if (Array.isArray(s.Markets)) {
-    marketsHtml = '<span class="dim">no market data</span>';
+    marketsHtml = `<span class="dim">${t('no market data')}</span>`;
   } else {
-    marketsHtml = '<span class="dim">click row to load markets</span>';
+    marketsHtml = `<span class="dim">${t('click row to load markets')}</span>`;
   }
 
   const det = `<div class="details">
-    <div class="field"><div class="label">Monthly profit</div><div class="value">${fmtMoneyFull(s.MonthlyProfit)}</div></div>
-    <div class="field"><div class="label">Balance</div><div class="value">${fmtMoneyFull(s.AccountBalance)}</div></div>
-    <div class="field"><div class="label">Realized P/L</div><div class="value">${fmtMoneyFull(s.RealisedPnl)}</div></div>
-    <div class="field"><div class="label">Risk</div><div class="value"><span class="pill ${risk}">${risk}</span></div></div>
-    <div class="field"><div class="label">Win Rate</div><div class="value">${wr >= 0 ? wr.toFixed(0) + '%' : '—'}</div></div>
-    <div class="field"><div class="label">Loss Rate</div><div class="value">${lr >= 0 ? lr.toFixed(0) + '%' : '—'}</div></div>
-    <div class="field"><div class="label">Age</div><div class="value">${fmtAge(age)}</div></div>
-    <div class="field"><div class="label">Trades total</div><div class="value">${fmtNum(s.TradesTotal)}</div></div>
-    <div class="field"><div class="label">Yearly profit</div><div class="value">${fmtMoneyFull(s.YearlyProfit)}</div></div>
-    <div class="field"><div class="label">Currency</div><div class="value">${escapeHtml(s.Currency || '—')}</div></div>
+    <div class="field"><div class="label">${t('Monthly profit')}</div><div class="value">${fmtMoneyFull(s.MonthlyProfit)}</div></div>
+    <div class="field"><div class="label">${t('Balance')}</div><div class="value">${fmtMoneyFull(s.AccountBalance)}</div></div>
+    <div class="field"><div class="label">${t('Realized P/L')}</div><div class="value">${fmtMoneyFull(s.RealisedPnl)}</div></div>
+    <div class="field"><div class="label">${t('Risk')}</div><div class="value"><span class="pill ${risk}">${t(risk)}</span></div></div>
+    <div class="field"><div class="label">${t('Win Rate')}</div><div class="value">${wr >= 0 ? wr.toFixed(0) + '%' : '—'}</div></div>
+    <div class="field"><div class="label">${t('Loss Rate')}</div><div class="value">${lr >= 0 ? lr.toFixed(0) + '%' : '—'}</div></div>
+    <div class="field"><div class="label">${t('Age')}</div><div class="value">${fmtAge(age)}</div></div>
+    <div class="field"><div class="label">${t('Trades total')}</div><div class="value">${fmtNum(s.TradesTotal)}</div></div>
+    <div class="field"><div class="label">${t('Yearly profit')}</div><div class="value">${fmtMoneyFull(s.YearlyProfit)}</div></div>
+    <div class="field"><div class="label">${t('Currency')}</div><div class="value">${escapeHtml(s.Currency || '—')}</div></div>
     <div class="trades-buttons">
       ${tradesButton(s, 'open')}
       ${tradesButton(s, 'closed')}
     </div>
-    <div class="field markets"><div class="label">Traded markets</div><div class="value markets-list">${marketsHtml}</div></div>
+    <div class="field markets"><div class="label">${t('Traded markets')}</div><div class="value markets-list">${marketsHtml}</div></div>
     ${tradesList(s, 'open')}
     ${tradesList(s, 'closed')}
   </div>`;
@@ -381,29 +573,29 @@ function rowHtml(s) {
 // Upstream returns the full set in one shot (Skip/Take are ignored), so we just fetch once
 // and let the user scroll within the trades-list (scrollable area capped via CSS).
 
-function tradeRowHtml(t, kind) {
-  const dir = String(t.Direction || '').toUpperCase();
+function tradeRowHtml(tr, kind) {
+  const dir = String(tr.Direction || '').toUpperCase();
   const dirCls = dir === 'BUY' ? 'dir-buy' : 'dir-sell';
-  const closeOrCurrent = kind === 'closed' ? t.ClosePrice : t.CurrentPrice;
-  const pnl = kind === 'closed' ? t.RealisedProfit : t.UnrealisedProfit;
-  const closeTime = kind === 'closed' ? t.CloseTimestamp : null;
+  const closeOrCurrent = kind === 'closed' ? tr.ClosePrice : tr.CurrentPrice;
+  const pnl = kind === 'closed' ? tr.RealisedProfit : tr.UnrealisedProfit;
+  const closeTime = kind === 'closed' ? tr.CloseTimestamp : null;
   return `<div class="trade">
     <div class="trade-main">
       <span class="trade-dir ${dirCls}">${dir}</span>
-      <span class="trade-qty">${t.Quantity}</span>
-      <span class="trade-inst">${escapeHtml(t.Instrument || '')}</span>
-      <span class="trade-prices">@ ${fmtTradePrice(t.OpenPrice)} → ${fmtTradePrice(closeOrCurrent)}</span>
+      <span class="trade-qty">${tr.Quantity}</span>
+      <span class="trade-inst">${escapeHtml(tr.Instrument || '')}</span>
+      <span class="trade-prices">@ ${fmtTradePrice(tr.OpenPrice)} → ${fmtTradePrice(closeOrCurrent)}</span>
     </div>
-    <div class="trade-pnl">${fmtTradePnl(pnl, t.CurrencyCode)}</div>
+    <div class="trade-pnl">${fmtTradePnl(pnl, tr.CurrencyCode)}</div>
     <div class="trade-meta">
-      <span class="trade-time">${fmtTradeTime(t.OpenTimestamp)}${closeTime ? ' → ' + fmtTradeTime(closeTime) : ''}</span>
-      <span class="trade-id">#${escapeHtml(String(t.TradeId || ''))}</span>
+      <span class="trade-time">${fmtTradeTime(tr.OpenTimestamp)}${closeTime ? ' → ' + fmtTradeTime(closeTime) : ''}</span>
+      <span class="trade-id">#${escapeHtml(String(tr.TradeId || ''))}</span>
     </div>
   </div>`;
 }
 
 function tradesButton(s, kind) {
-  const title       = kind === 'open' ? 'Open Trades' : 'Trade History';
+  const title       = t(kind === 'open' ? 'Open Trades' : 'Trade History');
   const dataKey     = kind === 'open' ? '_openTrades'   : '_closedTrades';
   const expandedKey = kind === 'open' ? '_openExpanded' : '_closedExpanded';
   const items = s[dataKey];
@@ -420,19 +612,17 @@ function tradesList(s, kind) {
   if (!s[expandedKey]) return '';
   const dataKey    = kind === 'open' ? '_openTrades'  : '_closedTrades';
   const loadingKey = kind === 'open' ? '_openLoading' : '_closedLoading';
-  const title      = kind === 'open' ? 'Open Trades' : 'Trade History';
+  const title      = t(kind === 'open' ? 'Open Trades' : 'Trade History');
   const items = s[dataKey];
   let body;
   if (s[loadingKey]) {
-    body = '<div class="dim trades-empty"><span class="spinner"></span>loading…</div>';
+    body = `<div class="dim trades-empty"><span class="spinner"></span>${t('loading…')}</div>`;
   } else if (!Array.isArray(items)) {
-    body = '<div class="dim trades-empty">no data</div>';
+    body = `<div class="dim trades-empty">${t('no data')}</div>`;
   } else if (items.length === 0) {
-    body = '<div class="dim trades-empty">' +
-      (kind === 'open' ? 'no open positions' : 'no closed signals in the last 30 days') +
-      '</div>';
+    body = `<div class="dim trades-empty">${t(kind === 'open' ? 'no open positions' : 'no closed signals in the last 30 days')}</div>`;
   } else {
-    body = items.map(t => tradeRowHtml(t, kind)).join('');
+    body = items.map(tr => tradeRowHtml(tr, kind)).join('');
   }
   return `<div class="trades-list-block trades-list-block--${kind}">
     <div class="trades-list-title">${title}</div>
@@ -470,13 +660,13 @@ function renderPager(total) {
   const cur = STATE.page;
   const pages = pageRange(cur, total);
   let html = '';
-  html += `<button data-go="prev" ${cur <= 1 ? 'disabled' : ''}>‹ prev</button>`;
+  html += `<button data-go="prev" ${cur <= 1 ? 'disabled' : ''}>${t('‹ prev')}</button>`;
   for (const p of pages) {
     if (p === '…') html += `<span class="gap">…</span>`;
     else html += `<button class="page${p === cur ? ' cur' : ''}" data-go="${p}">${p}</button>`;
   }
-  html += `<button data-go="next" ${cur >= total ? 'disabled' : ''}>next ›</button>`;
-  html += `<span class="info">go to <input id="goto" type="number" min="1" max="${total}" value="${cur}" style="width:64px;padding:6px"></span>`;
+  html += `<button data-go="next" ${cur >= total ? 'disabled' : ''}>${t('next ›')}</button>`;
+  html += `<span class="info">${t('go to')} <input id="goto" type="number" min="1" max="${total}" value="${cur}" style="width:64px;padding:6px"></span>`;
   pagerEl.innerHTML = html;
 }
 function pageRange(cur, total) {
@@ -530,8 +720,8 @@ async function loadFull() {
     const pct = p.total ? Math.min(100, (p.loaded / p.total) * 100) : 0;
     if (!ready) {
       loadmore.innerHTML = `<div class="progress-bar"><span style="width:${pct.toFixed(1)}%"></span></div>
-        Building full catalog: <b>${p.loaded.toLocaleString('en-US')}</b> / ${p.total.toLocaleString('en-US')} strategies (${pct.toFixed(0)}%) · <i>upstream rate-limited</i>
-        <div class="dim" style="margin-top:8px">All ${p.total.toLocaleString('en-US')} strategies are visible. Stats fill in as the build progresses; refresh of data every 20 sec.</div>`;
+        ${t('Building full catalog:')} <b>${p.loaded.toLocaleString('en-US')}</b> / ${p.total.toLocaleString('en-US')} ${t('strategies')} (${pct.toFixed(0)}%) · <i>${t('upstream rate-limited')}</i>
+        <div class="dim" style="margin-top:8px">${t('All')} ${p.total.toLocaleString('en-US')} ${t('strategies are visible. Stats fill in as the build progresses; refresh of data every 20 sec.')}</div>`;
       // Re-fetch partial periodically to update displayed data
       if (Date.now() - lastPaint > 20000) {
         await fetchAndMerge(true);
@@ -543,7 +733,7 @@ async function loadFull() {
   // final fetch
   await fetchAndMerge(false);
   STATE.ready = true;
-  loadmore.innerHTML = `<div class="dim">Full catalog of <b>${STATE.total.toLocaleString('en-US')}</b> strategies loaded · rebuilt daily at 11:00 Kyiv time</div>`;
+  loadmore.innerHTML = `<div class="dim">${t('Full catalog of')} <b>${STATE.total.toLocaleString('en-US')}</b> ${t('strategies loaded · rebuilt daily at 11:00 Kyiv time')}</div>`;
   scheduleRender();
 }
 
@@ -718,7 +908,7 @@ function bindUI() {
       const raw = Number(el.value);
       const v = cfg.parse(raw);
       f[cfg.key] = v;
-      if (v == null) { valEl.textContent = 'any'; valEl.classList.add('dim'); }
+      if (v == null) { valEl.textContent = t('any'); valEl.classList.add('dim'); }
       else { valEl.textContent = cfg.fmt(v); valEl.classList.remove('dim'); }
       const pct = updateFill(el);
       bubble.style.setProperty('--p', pct);
@@ -746,7 +936,7 @@ function bindUI() {
     f.retMin = lo <= 0   ? null : returnFromRaw(lo);
     f.retMax = hi >= 100 ? null : returnFromRaw(hi);
     const valEl = $('#ret-val');
-    if (f.retMin == null && f.retMax == null) { valEl.textContent = 'any'; valEl.classList.add('dim'); }
+    if (f.retMin == null && f.retMax == null) { valEl.textContent = t('any'); valEl.classList.add('dim'); }
     else {
       const a = f.retMin == null ? '0%'     : fmtRetMag(returnFromRaw(lo));
       const b = f.retMax == null ? '50K%+'  : fmtRetMag(returnFromRaw(hi));
@@ -795,7 +985,7 @@ function bindUI() {
     f.balanceMin = lo <= 0   ? null : balanceFromRaw(lo);
     f.balanceMax = hi >= 100 ? null : balanceFromRaw(hi);
     if (f.balanceMin == null && f.balanceMax == null) {
-      balValEl.textContent = 'any'; balValEl.classList.add('dim');
+      balValEl.textContent = t('any'); balValEl.classList.add('dim');
     } else {
       const a = f.balanceMin == null ? '$0' : fmtAUM(balanceFromRaw(lo));
       const b = f.balanceMax == null ? '$10M+' : fmtAUM(balanceFromRaw(hi));
@@ -831,7 +1021,7 @@ function bindUI() {
       // empty → release Balance to "any"
       balMinEl.value = 0;
       balMaxEl.value = 100;
-      investValEl.textContent = 'any'; investValEl.classList.add('dim');
+      investValEl.textContent = t('any'); investValEl.classList.add('dim');
     } else {
       const amount = parseFloat(raw);
       if (!Number.isFinite(amount) || amount < 50) return;  // ignore < $50 per spec
@@ -851,7 +1041,7 @@ function bindUI() {
       const aside = $('aside#filters');
       const open = aside.classList.toggle('open');
       filtersToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      filtersToggle.textContent = open ? 'Hide filters' : 'Filters';
+      filtersToggle.textContent = open ? t('Hide filters') : t('Filters');
     });
   }
   $('#refresh').addEventListener('click', () => { STATE.byId.clear(); STATE.page = 1; STATE.ready = false; loadFull(); });
@@ -975,6 +1165,16 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
   localStorage.setItem('pelican-theme', next);
   scheduleRender(); // re-render rows so sparkline picks up new var values
 });
+
+// ---- language toggle ----
+(function initLangToggle() {
+  const btn = document.getElementById('lang-toggle');
+  if (!btn) return;
+  btn.textContent = LANG === 'ru' ? 'EN' : 'RU';
+  btn.addEventListener('click', () => {
+    setLang(LANG === 'ru' ? 'en' : 'ru');
+  });
+})();
 
 bindUI();
 loadFull();
