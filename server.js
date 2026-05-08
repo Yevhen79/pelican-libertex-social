@@ -755,7 +755,10 @@ const server = http.createServer((req, res) => {
     // (we mutate those during dev, so a hard reload picks up changes via Last-Modified).
     const stat = fs.statSync(fp);
     const longCache = /^\.(png|jpg|jpeg|gif|webp|ico|svg|woff2?|ttf)$/i.test(ext);
-    const cacheCtrl = longCache ? 'public, max-age=604800' : 'public, max-age=86400';
+    // Images/fonts are immutable enough for a week. HTML/CSS/JS use no-cache so
+    // the browser revalidates every load (Last-Modified gives a fast 304); fixes
+    // updates landing slowly when we redeploy CSS/JS.
+    const cacheCtrl = longCache ? 'public, max-age=604800' : 'no-cache';
     const headers = {
       'Content-Type': ctype,
       'Cache-Control': cacheCtrl,

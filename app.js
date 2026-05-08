@@ -1,5 +1,29 @@
 'use strict';
 
+// ---- Welcome modal ----
+// Shown on every visit unless dismissed within the last 30 minutes.
+// The inline <head> script in index.html already adds .welcome-suppressed
+// to <html> when the timestamp is fresh, so the modal never flashes
+// for returning visitors. This block wires up the close handlers.
+(function () {
+  const modal = document.getElementById('welcome-modal');
+  if (!modal) return;
+  const isSuppressed = document.documentElement.classList.contains('welcome-suppressed');
+  if (isSuppressed) return; // nothing to do — modal is already display:none
+  const LS_KEY = 'pelican-welcome-dismissed-at';
+  document.body.classList.add('welcome-open');
+  function dismiss() {
+    try { localStorage.setItem(LS_KEY, String(Date.now())); } catch (e) {}
+    modal.style.display = 'none';
+    document.body.classList.remove('welcome-open');
+    document.removeEventListener('keydown', onKey);
+  }
+  function onKey(e) { if (e.key === 'Escape') dismiss(); }
+  document.getElementById('welcome-close').addEventListener('click', dismiss);
+  document.getElementById('welcome-cta').addEventListener('click', dismiss);
+  document.addEventListener('keydown', onKey);
+})();
+
 const PAGE_SIZE = 20;
 
 const STATE = {
