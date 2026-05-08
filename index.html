@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css?v=20260508d">
+<link rel="stylesheet" href="/styles.css?v=20260508e">
 <script>
   // Suppress the welcome modal early (before body paints) if dismissed within 30 min.
   // Also pick the language synchronously so static strings paint correct on first frame.
@@ -43,62 +43,66 @@
         <span class="welcome-brand-sub" data-i18n="Copy Trading">Copy Trading</span>
       </span>
     </div>
-    <div class="welcome-body">
-      <div class="welcome-anim-wrap" aria-hidden="true">
-        <img src="/promo.gif" alt="" class="welcome-anim" loading="lazy">
-      </div>
-      <div class="welcome-content">
-        <h1 id="welcome-title" class="welcome-title" data-i18n="Start earning more by copying the trades of professionals on Libertex">Start earning more by copying the trades of professionals on Libertex</h1>
-        <p class="welcome-desc" data-i18n-html="welcome.desc">Why learn from your own mistakes when you can adopt the experience of the best? Connect to successful traders, copy their strategies, and earn on the financial markets — <b>suitable even for those with no trading experience</b>. Smart trading and fast growth!</p>
-        <div class="welcome-section-label" data-i18n="How it works">How it works</div>
-        <ol class="welcome-steps">
-          <li class="welcome-step">
-            <span class="welcome-step-num">1</span>
-            <div>
-              <div class="welcome-step-title" data-i18n="Download the app">Download the app</div>
-              <div class="welcome-step-desc" data-i18n="Available for iOS and Android">Available for iOS and Android</div>
-            </div>
-          </li>
-          <li class="welcome-step">
-            <span class="welcome-step-num">2</span>
-            <div>
-              <div class="welcome-step-title" data-i18n="Quick registration">Quick registration</div>
-              <div class="welcome-step-desc" data-i18n="Use the e-mail from your Libertex account">Use the e-mail from your Libertex account</div>
-            </div>
-          </li>
-          <li class="welcome-step">
-            <span class="welcome-step-num">3</span>
-            <div>
-              <div class="welcome-step-title" data-i18n="Link your MetaTrader account">Link your MetaTrader account</div>
-              <div class="welcome-step-desc" data-i18n-html="welcome.step3.desc">Copy the credentials from the «More» section in the Libertex app and paste them into the «Account» section in the Copy&nbsp;Trading app</div>
-            </div>
-          </li>
-          <li class="welcome-step">
-            <span class="welcome-step-num">4</span>
-            <div>
-              <div class="welcome-step-title" data-i18n="Choose a top trader">Choose a top trader</div>
-              <div class="welcome-step-desc" data-i18n="Browse profiles and pick one whose strategy fits you">Browse profiles and pick one whose strategy fits you</div>
-            </div>
-          </li>
-          <li class="welcome-step">
-            <span class="welcome-step-num">5</span>
-            <div>
-              <div class="welcome-step-title" data-i18n="Automatic copying">Automatic copying</div>
-              <div class="welcome-step-desc" data-i18n="The system replicates the chosen trader's deals in real time">The system replicates the chosen trader's deals in real time</div>
-            </div>
-          </li>
-        </ol>
-        <div class="welcome-bonus">
-          <span class="welcome-bonus-icon" aria-hidden="true">📊</span>
-          <div>
-            <div class="welcome-step-title" data-i18n="Track the result">Track the result</div>
-            <div class="welcome-step-desc" data-i18n="Monitor profitability, change settings or pause at any time">Monitor profitability, change settings or pause at any time</div>
-          </div>
+    <div class="welcome-video-wrap">
+      <iframe id="welcome-video"
+              title="Libertex Copy Trading"
+              data-yt-ru="https://www.youtube-nocookie.com/embed/nVI14i504ek?rel=0&modestbranding=1&playsinline=1"
+              data-yt-en="https://www.youtube-nocookie.com/embed/pirGY80mHxs?rel=0&modestbranding=1&playsinline=1"
+              src=""
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+    </div>
+    <h1 id="welcome-title" class="welcome-title" data-i18n="Start earning more by copying the trades of professionals on Libertex">Start earning more by copying the trades of professionals on Libertex</h1>
+    <p class="welcome-desc" data-i18n-html="welcome.desc">Why learn from your own mistakes when you can adopt the experience of the best? Connect to successful traders, copy their strategies, and earn on the financial markets — <b>suitable even for those with no trading experience</b>. Smart trading and fast growth!</p>
+    <div class="welcome-section-label" data-i18n="How it works">How it works</div>
+    <ol class="welcome-steps">
+      <li class="welcome-step">
+        <span class="welcome-step-num">1</span>
+        <div>
+          <div class="welcome-step-title" data-i18n="Download the app">Download the app</div>
+          <div class="welcome-step-desc" data-i18n="Available for iOS and Android">Available for iOS and Android</div>
         </div>
-        <button id="welcome-cta" class="welcome-cta" type="button"><span data-i18n="Start now">Start now</span><span aria-hidden="true">↗</span></button>
-        <p class="welcome-tag" data-i18n="Let the experts' experience work for you!">Let the experts' experience work for you!</p>
+      </li>
+      <li class="welcome-step">
+        <span class="welcome-step-num">2</span>
+        <div>
+          <div class="welcome-step-title" data-i18n="Quick registration">Quick registration</div>
+          <div class="welcome-step-desc" data-i18n="Use the e-mail from your Libertex account">Use the e-mail from your Libertex account</div>
+        </div>
+      </li>
+      <li class="welcome-step">
+        <span class="welcome-step-num">3</span>
+        <div>
+          <div class="welcome-step-title" data-i18n="Link your MetaTrader account">Link your MetaTrader account</div>
+          <div class="welcome-step-desc" data-i18n-html="welcome.step3.desc">Copy the credentials from the «More» section in the Libertex app and paste them into the «Account» section in the Copy&nbsp;Trading app</div>
+        </div>
+      </li>
+      <li class="welcome-step">
+        <span class="welcome-step-num">4</span>
+        <div>
+          <div class="welcome-step-title" data-i18n="Choose a top trader">Choose a top trader</div>
+          <div class="welcome-step-desc" data-i18n="Browse profiles and pick one whose strategy fits you">Browse profiles and pick one whose strategy fits you</div>
+        </div>
+      </li>
+      <li class="welcome-step">
+        <span class="welcome-step-num">5</span>
+        <div>
+          <div class="welcome-step-title" data-i18n="Automatic copying">Automatic copying</div>
+          <div class="welcome-step-desc" data-i18n="The system replicates the chosen trader's deals in real time">The system replicates the chosen trader's deals in real time</div>
+        </div>
+      </li>
+    </ol>
+    <div class="welcome-bonus">
+      <span class="welcome-bonus-icon" aria-hidden="true">📊</span>
+      <div>
+        <div class="welcome-step-title" data-i18n="Track the result">Track the result</div>
+        <div class="welcome-step-desc" data-i18n="Monitor profitability, change settings or pause at any time">Monitor profitability, change settings or pause at any time</div>
       </div>
     </div>
+    <button id="welcome-cta" class="welcome-cta" type="button"><span data-i18n="Start now">Start now</span><span aria-hidden="true">↗</span></button>
+    <p class="welcome-tag" data-i18n="Let the experts' experience work for you!">Let the experts' experience work for you!</p>
   </div>
 </div>
 <header>
@@ -238,6 +242,6 @@
   </section>
 </main>
 
-<script src="/app.js?v=20260508d"></script>
+<script src="/app.js?v=20260508e"></script>
 </body>
 </html>

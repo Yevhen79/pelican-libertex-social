@@ -148,12 +148,22 @@ let LANG = (function () {
   return nav.startsWith('ru') || nav.startsWith('uk') || nav.startsWith('be') ? 'ru' : 'en';
 })();
 function t(s) { return LANG === 'ru' ? (I18N_RU[s] || s) : s; }
+// Swap the welcome-modal YouTube embed to the language-matching video.
+// Skipped when the iframe is missing (modal was suppressed) or when the
+// desired src already matches — so we don't reload the player on every toggle.
+function applyVideoLang() {
+  const iframe = document.getElementById('welcome-video');
+  if (!iframe) return;
+  const want = LANG === 'ru' ? iframe.dataset.ytRu : iframe.dataset.ytEn;
+  if (want && iframe.getAttribute('src') !== want) iframe.setAttribute('src', want);
+}
 function setLang(lang) {
   if (lang !== 'ru' && lang !== 'en') return;
   LANG = lang;
   try { localStorage.setItem('pelican-lang', lang); } catch (e) {}
   document.documentElement.lang = lang;
   applyI18n();
+  applyVideoLang();
   if (typeof scheduleRender === 'function') scheduleRender();
 }
 function applyI18n() {
@@ -204,8 +214,13 @@ document.addEventListener('DOMContentLoaded', applyI18n);
   if (isSuppressed) return; // nothing to do — modal is already display:none
   const LS_KEY = 'pelican-welcome-dismissed-at';
   document.body.classList.add('welcome-open');
+  // Load the language-appropriate YouTube embed now that the modal is showing.
+  applyVideoLang();
   function dismiss() {
     try { localStorage.setItem(LS_KEY, String(Date.now())); } catch (e) {}
+    // Clear the iframe src to stop playback (otherwise the audio keeps going).
+    const iframe = document.getElementById('welcome-video');
+    if (iframe) iframe.setAttribute('src', '');
     modal.style.display = 'none';
     document.body.classList.remove('welcome-open');
     document.removeEventListener('keydown', onKey);
